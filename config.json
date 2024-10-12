@@ -1,0 +1,7 @@
+{
+  "package_path": "packages",
+  "workflow_path": "nozy/workflows",
+  "job_path": "nozy/jobs",
+  "output_path": "nozy/outputs",
+  "model_path": ["models"]
+}
