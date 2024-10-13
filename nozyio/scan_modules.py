@@ -60,7 +60,11 @@ def extract_function_details(obj, module_name):
         signature = inspect.signature(obj)
         ast_args = []
         nozy_node_def = getattr(obj, 'NOZY_NODE_DEF', {})
+        if not isinstance(nozy_node_def, dict):
+            nozy_node_def = {}
         extra_input_info = nozy_node_def.get('input', nozy_node_def.get('inputs', {}))
+        if not isinstance(extra_input_info, dict):
+            extra_input_info = {}
         
         # Collect information about parameters
         for index, (param_name, param) in enumerate(signature.parameters.items()):
@@ -116,6 +120,8 @@ def extract_function_details(obj, module_name):
         
         return {
             "type": "function",
+            "display_name": nozy_node_def.get('display_name', obj.__name__),
+            "description": nozy_node_def.get('description', None),
             "name": obj.__name__,
             "module": module_name,
             "input": ast_args,
