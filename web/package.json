@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -p tsconfig.node.json && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -18,10 +18,10 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.446.0",
     "nanoid": "^5.0.7",
+    "prism-react-renderer": "^2.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-fps": "^1.0.6",
-    "react-syntax-highlighter": "^15.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "zustand": "^5.0.0-rc.2"

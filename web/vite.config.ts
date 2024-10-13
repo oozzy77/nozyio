@@ -10,4 +10,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom"],
+          "reactflow-vendor": ["@xyflow/react"],
+          "react-syntax-highlighter": ["react-syntax-highlighter"],
+        },
+      },
+    },
+  },
 });

@@ -8,9 +8,8 @@ import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
 import CustomDrawer from "@/components/ui/CustomDrawer";
 import { Stack } from "@/components/ui/Stack";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useToast } from "@/hooks/use-toast";
+import { Highlight, themes } from "prism-react-renderer";
 
 export default function TopMenuCodePreviewButton() {
   const [open, setOpen] = useState(false);
@@ -25,7 +24,11 @@ export default function TopMenuCodePreviewButton() {
         Code
       </Button>
       {open && (
-        <CustomDrawer onClose={() => setOpen(false)} position="right">
+        <CustomDrawer
+          onClose={() => setOpen(false)}
+          position="right"
+          backdrop={null}
+        >
           <CodePreview />
         </CustomDrawer>
       )}
@@ -78,9 +81,19 @@ function CodePreview() {
       </Flex>
 
       <div>
-        <SyntaxHighlighter language="python" style={vscDarkPlus}>
-          {code}
-        </SyntaxHighlighter>
+        <Highlight theme={themes.shadesOfPurple} code={code} language="python">
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre style={style}>
+              {tokens.map((line, i) => (
+                <div key={i} {...getLineProps({ line })}>
+                  {line.map((token, key) => (
+                    <span key={key} {...getTokenProps({ token })} />
+                  ))}
+                </div>
+              ))}
+            </pre>
+          )}
+        </Highlight>
       </div>
     </Stack>
   );

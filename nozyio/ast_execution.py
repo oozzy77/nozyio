@@ -45,7 +45,12 @@ def traverse_ast_tree_and_replace(ast_node, handle_connection_map, node_id, valu
                 "kind": None
             }
         else:
-            raise Exception(f'❌No value provided for required input "{ast_node.get("name") or ast_node.get("id") }" in node #{node_id}. Please provide a value for this input.')
+            return {
+                "node_type": "Constant",
+                "value": None,
+                "kind": None
+            }
+            # raise Exception(f'❌No value provided for required input "{ast_node.get("name") or ast_node.get("id") }" in node #{node_id}. Please provide a value for this input.')
 
     # Iterate over all fields in the node
     for key, value in ast_node.items():

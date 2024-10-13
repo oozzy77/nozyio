@@ -13,6 +13,8 @@
         "aiohttp",
         "astpretty"
     ]
+    [tool.setuptools]
+    packages = ["nozyio"]
 
     [project.scripts]
     nozyio = "nozyio.server:start_server"

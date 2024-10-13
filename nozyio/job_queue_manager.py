@@ -9,7 +9,6 @@ async def run_in_executor(func, *args):
     return await loop.run_in_executor(executor, func, *args)
 
 async def process_queue(app):
-    print('inside process_queue')
     task_queue = app['task_queue']
     while True:
         task = await task_queue.get()

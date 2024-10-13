@@ -17,6 +17,7 @@
 
 <img width="830" alt="Screenshot 2024-10-12 at 11 09 18 PM" src="https://github.com/user-attachments/assets/abad2101-973b-4538-85d2-61d5e7cfb67b">
 
+## Development
 
 Start web dev server:
 `cd web && npm run dev`

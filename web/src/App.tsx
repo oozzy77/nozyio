@@ -1,11 +1,14 @@
 import "./App.css";
 import "@xyflow/react/dist/style.css";
-import { ThemeProvider, useTheme } from "./components/ui/theme-provider";
-import FlowCanvas from "./canvas/FlowCanvas";
-import TopMenu from "./menu/TopMenu";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+// import FlowCanvas from "./canvas/FlowCanvas";
+// import TopMenu from "./menu/TopMenu";
 import { Toaster } from "@/components/ui/toaster";
-import FPSCounter from "./components/FPSCounter";
+import FPSCounter from "@/components/FPSCounter";
 import { DnDProvider } from "./canvas/DnDContext";
+import { lazy } from "react";
+const TopMenu = lazy(() => import("./menu/TopMenu"));
+const FlowCanvas = lazy(() => import("./canvas/FlowCanvas"));
 
 export default function App() {
   return (
@@ -20,9 +23,6 @@ export default function App() {
         >
           <FlowCanvas />
           <TopMenu />
-          {/* <div className="fixed bottom-0 right-0">
-            <FpsView width={60} height={60} />
-          </div> */}
           <FPSCounter />
           <Toaster />
         </div>

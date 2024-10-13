@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
-import TopMenuNodes from "./TopMenuNodes";
 import type { CanvasState, NozyGraph } from "@/type/types";
 import { common_app, fetchApi } from "@/common_app/app";
 import {
   IconDownload,
   IconFolderOpen,
-  IconPlayerPlay,
   IconPlayerPlayFilled,
 } from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
-import { useRef } from "react";
+import { lazy, useRef } from "react";
 import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
-import { nanoid, customAlphabet } from "nanoid";
-import TopMenuCodePreviewButton from "./TopMenuCodePreviewButton";
+import { customAlphabet } from "nanoid";
+const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
+const TopMenuCodePreviewButton = lazy(
+  () => import("./TopMenuCodePreviewButton")
+);
 
 export default function TopMenu() {
   const { name, setName, loadGraph } = useAppStore(
