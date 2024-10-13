@@ -3,5 +3,6 @@
   "workflow_path": "nozy/workflows",
   "job_path": "nozy/jobs",
   "output_path": "nozy/outputs",
-  "model_path": ["models"]
+  "model_path": ["models"],
+  "ignore": ["node_modules", "venv", "env", ".git", "__pycache__", "dist"]
 }

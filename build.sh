@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# build nozyio ui
+
+cd nozyio/web && npm run build
+
+cd ../..
+
 # Clear the dist folder
 rm -rf dist/*
 

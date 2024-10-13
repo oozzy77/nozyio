@@ -190,7 +190,9 @@ def refresh_node_def(graph: dict):
             node['data']['import_error'] = str(e)
     return graph
 
-def scan_directory(directory):
+def scan_directory(directory, ignore=None):
+    if ignore is None:
+        ignore = config.get('ignore', [])
     print('🗂️ finding python files in', directory)
     if not os.path.isdir(directory):
         raise ValueError(f"Please provide an absolute path, '{directory}' is not absolute.")
@@ -200,15 +202,23 @@ def scan_directory(directory):
     # Use os.listdir to avoid recursion
     for file in os.listdir(directory):
         full_path = os.path.join(directory, file)
+        if file.startswith('.') or file in ignore:
+            continue
         if file.endswith('.py'):
             print(f'📄 find python file {file}')
-            functions = list_functions_classes(full_path)
-            children.append({
-                "type": "file",
-                "name": file,
-                "path": os.path.relpath(full_path, root_dir),
-                "functions": functions
-            })
+            try:
+                functions = list_functions_classes(full_path)
+                children.append({
+                    "type": "file",
+                    "name": file,
+                    "path": os.path.relpath(full_path, root_dir),
+                    "functions": functions
+                })
+            except Exception as e:
+                print(f'❌ error scanning {file}: {e}')
+                print(traceback.format_exc())
+                continue
+     
         if os.path.isdir(full_path):
             children.append({
                 "type": "folder",
@@ -219,16 +229,16 @@ def scan_directory(directory):
     return children
 
 project_root = os.path.dirname(os.path.dirname(__file__))
-def scan_directories(directories, blacklist=None):
-    if blacklist is None:
-        blacklist = []
-        
+def scan_directories(directories, ignore=None):
+    if ignore is None:
+        ignore = config['ignore']
+
     all_modules_info = {}
     for path in directories:
         # path can be relative or absolute
         abs_path = os.path.join(project_root, path)
         print(f"🗂️ Scanning directory: {abs_path}")
-        modules_info = scan_directory(abs_path, blacklist=blacklist)
+        modules_info = scan_directory(abs_path, ignore=ignore)
         all_modules_info.update(modules_info)
     return all_modules_info
 

@@ -29,23 +29,17 @@ To start the nozyio UI:
 
 ## Development
 
-### pip package development:
-
 install pip package in editable mode
 
 `pip install -e .`
 
-start nozyio UI
+start nozyio server
 
-`nozyio`
+`nozyio --allow-cors`
 
-### UI development with hot reload:
+Start web dev server with hot reload
 
-Start python server:
-`python -m nozyio.server --allow-cors`
-
-Start web dev server:
-`cd web && npm run dev`
+`cd nozyio/web && npm run dev`
 
 Go to the web server url
 

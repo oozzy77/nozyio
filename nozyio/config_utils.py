@@ -9,6 +9,7 @@ def get_config() -> dict:
         'model_path': 'models',
         'workflow_path': 'workflows',
         'output_path': 'outputs',
+        'ignore': ['node_modules', 'venv', 'env', '.git', '__pycache__', 'dist'],
     }
     config = {}
     if os.path.exists("config.json"):
