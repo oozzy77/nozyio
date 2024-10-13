@@ -23,7 +23,9 @@ load_image.NOZY_NODE_DEF = {
             "type": "filepath",
             "widget": {
                 'type': 'server_file_picker',
-                'accept': '.png,.jpg,.jpeg,.bmp,.tiff,.webp'
+                'options': {
+                    'extensions': ['.png', '.jpg', '.jpeg', '.bmp', '.tiff', '.webp']
+                }
             },
             "description": "Path to image"
         }

@@ -1,7 +1,6 @@
-import type { CanvasNode, NozyGraph } from "@/type/types";
-import { Edge } from "@xyflow/react";
+import type { NozyGraph } from "@/type/types";
 
-let apiBase = import.meta.env.DEV ? "http://127.0.0.1:7070" : "";
+export const apiBase = import.meta.env.DEV ? "http://127.0.0.1:7070" : "";
 const apiHost = import.meta.env.DEV ? "127.0.0.1:7070" : window.location.host;
 export const fetchApi = async (url: string, options?: RequestInit) => {
   return fetch(apiBase + url, options);

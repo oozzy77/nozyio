@@ -59,6 +59,21 @@ async def handle_scan_directories(request):
     children = scan_directory(abs_path)
     return web.json_response(children)
 
+@endpoint('/preview_image')
+async def handle_preview_image(request):
+    path = request.rel_url.query['path']
+    abs_path = os.path.join(get_root_dir(), path)
+
+    if not os.path.exists(abs_path) or not os.path.isfile(abs_path):
+        return web.Response(status=404, text="Image not found")
+
+    try:
+        with open(abs_path, 'rb') as image_file:
+            image_data = image_file.read()
+        return web.Response(body=image_data, content_type='image/jpeg')  # Adjust content_type as needed
+    except Exception as e:
+        return web.Response(status=500, text=str(e))
+
 @endpoint('/file_picker/list_files', method='POST')
 async def handle_list_files(request):
     body = await request.json()
@@ -153,7 +168,7 @@ def start_server():
         app.router.add_static('/', WEB_PATH, show_index=True)
     
     app.on_startup.append(on_startup)
-    app.on_cleanup.append(on_cleanup)
+    # app.on_cleanup.append(on_cleanup)
     
     # add the current directory to the python path
     sys.path.append(os.getcwd())

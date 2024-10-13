@@ -23,7 +23,9 @@ export default function ASTFunctionNodeInput({
   const isNumber = input.type === "int" || input.type === "float";
   const widget = input.widget;
   if (widget?.type === "server_file_picker") {
-    return <ServerFilePicker input={input} />;
+    return (
+      <ServerFilePicker input={input} extensions={widget.options?.extensions} />
+    );
   }
   return (
     <div
