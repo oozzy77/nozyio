@@ -10,6 +10,7 @@ def get_config() -> dict:
         'workflow_path': 'workflows',
         'output_path': 'outputs',
     }
+    config = {}
     if os.path.exists("config.json"):
         with open("config.json", "r") as f:
             config = json.load(f)
