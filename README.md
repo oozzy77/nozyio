@@ -9,7 +9,7 @@
 
 <img width="900" alt="Screenshot 2024-10-12 at 11 04 35 PM" src="https://github.com/user-attachments/assets/8502f6fd-9c7b-4469-b22e-36da9b6601fb">
 
-## Installation
+## Install
 
 `pip install nozyio`
 
