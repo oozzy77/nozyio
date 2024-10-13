@@ -9,7 +9,7 @@ def get_config() -> dict:
         'model_path': 'models',
         'workflow_path': 'workflows',
         'output_path': 'outputs',
-        'ignore': ['node_modules', 'venv', 'env', '.git', '__pycache__', 'dist'],
+        'ignore': ['node_modules', 'venv', '.env', '.git', '__pycache__', 'dist', '.DS_Store'],
     }
     config = {}
     if os.path.exists("config.json"):
@@ -27,5 +27,10 @@ def get_config() -> dict:
 
 def get_root_dir():
     return os.getcwd()
+
+def should_ignore(path: str) -> bool:
+    if path.startswith('.'):
+        return True
+    return any(path.startswith(ignore) for ignore in config['ignore'])
 
 config = get_config()

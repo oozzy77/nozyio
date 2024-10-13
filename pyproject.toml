@@ -11,7 +11,8 @@
     ]
     dependencies = [
         "aiohttp",
-        "astpretty"
+        "astpretty",
+        "requests",
     ]
     [tool.setuptools]
     packages = ["nozyio"]

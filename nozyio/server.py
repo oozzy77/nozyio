@@ -5,6 +5,7 @@ from aiohttp import web
 import os
 from nozyio.code_to_graph import code_to_graph
 from nozyio.ast_execution import execute_graph, graph_to_code
+from nozyio.file_picker import list_files
 from nozyio.scan_modules import refresh_node_def, scan_directory
 from nozyio.config_utils import config, get_root_dir
 from nozyio.websocket_manager import websocket_manager
@@ -25,6 +26,10 @@ async def handle_queue_status(request):
         'queue_size': task_queue.qsize(),
         'tasks_pending': not task_queue.empty()
     })
+
+@endpoint('/get_os_sep')
+async def handle_get_os_sep(request):
+    return web.Response(text=os.sep)
 
 @endpoint('/code_to_graph')
 async def handle_code_to_graph(request):
@@ -53,6 +58,18 @@ async def handle_scan_directories(request):
     abs_path = os.path.join(get_root_dir(), rel_path)
     children = scan_directory(abs_path)
     return web.json_response(children)
+
+@endpoint('/file_picker/list_files', method='POST')
+async def handle_list_files(request):
+    body = await request.json()
+    path = body['path']
+    extensions = body.get('extensions', None)
+    abs_path = os.path.join(get_root_dir(), path)
+    children = list_files(abs_path, extensions)
+    return web.json_response({
+        'path': abs_path,
+        'items': children
+    })
 
 @endpoint('/graph_to_code', method='POST')
 async def handle_graph_to_code(request):

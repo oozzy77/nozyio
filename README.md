@@ -11,6 +11,8 @@
 
 ## Install
 
+In your python project root:
+
 `pip install nozyio`
 
 To start the nozyio UI:
