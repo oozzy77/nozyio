@@ -10,6 +10,7 @@ export const common_app: {
   fetchApi: typeof fetchApi;
   wsUrl: string;
   graph: NozyGraph;
+  osSep: string;
 } = {
   fetchApi,
   wsUrl: `ws${
@@ -22,4 +23,15 @@ export const common_app: {
     edges: [],
     values: {},
   },
+  osSep: ".",
 };
+
+fetchApi("/get_os_sep")
+  .then((res) => res.text())
+  .then((sep) => {
+    if (sep.length) {
+      common_app.osSep = sep;
+    } else {
+      console.error("Failed to get OS separator");
+    }
+  });

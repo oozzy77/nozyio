@@ -24,7 +24,11 @@ export default function ASTFunctionNodeInput({
   const widget = input.widget;
   if (widget?.type === "server_file_picker") {
     return (
-      <ServerFilePicker input={input} extensions={widget.options?.extensions} />
+      <ServerFilePicker
+        input={input}
+        extensions={widget.options?.extensions}
+        nodeID={nodeID}
+      />
     );
   }
   return (
