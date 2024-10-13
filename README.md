@@ -1,13 +1,14 @@
 # NozyIO
 
-**Python AI/ML pipeline visualization and orchestration UI**
+**Python AI/ML pipeline visualization and orchestration UI for your codebase**
+
 graph flow UI ↔️ python code
 
-- Python visual scripting
+- Workflow nodes editor for your python code
 - **Automatically scan your python functions to nodes** with params typing
+- Visualize output results of each step/node, including images, charts
 - Export the pipeline graph as Python code
-- Visualize output results in each node
-- [Upcoming] Visualize your python code to graph flow
+- Python visual scripting
 
 <img width="900" alt="Screenshot 2024-10-12 at 11 04 35 PM" src="https://github.com/user-attachments/assets/8502f6fd-9c7b-4469-b22e-36da9b6601fb">
 
@@ -30,6 +31,11 @@ To start the nozyio UI:
 **👇Automatically scan your python functions as nodes with params typing**
 
 <img width="830" alt="Screenshot 2024-10-12 at 11 09 18 PM" src="https://github.com/user-attachments/assets/abad2101-973b-4538-85d2-61d5e7cfb67b">
+
+## Future Plans
+
+- [ ] Visualize your python code to graph flow
+- [ ] AI image nodes packages
 
 ## Development
 
