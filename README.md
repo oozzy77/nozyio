@@ -25,6 +25,8 @@ install pip package in editable mode
 
 `pip install -e .`
 
+start nozyio UI
+
 `nozyio`
 
 ### UI development with hot reload:
@@ -36,6 +38,14 @@ Start web dev server:
 `cd web && npm run dev`
 
 Go to the web server url
+
+### Build and publish to pypi
+
+`chmod +x build.sh `
+
+`./build.sh`
+
+`twine upload dist/*`
 
 ## Credits
 

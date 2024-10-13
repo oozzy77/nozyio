@@ -4,10 +4,10 @@
 
     [project]
     name = "nozyio"
-    version = "0.1.0"
+    version = "0.1.2"
     description = "Node based workflow orchestration UI for python ML/AI computing"
     authors = [
-        { name = "Nozy", email = "nozyio@gmail.com" }
+        { name = "oozzy", email = "nozyio.hello@gmail.com" }
     ]
     dependencies = [
         "aiohttp",
