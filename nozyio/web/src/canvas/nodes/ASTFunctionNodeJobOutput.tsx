@@ -1,20 +1,8 @@
-import { Node } from "@xyflow/react";
-import {
-  ASTNodeData,
-  ASTNodeOutput,
-  CanvasState,
-  EJobNodeStatus,
-  JobNodeStatus,
-} from "@/type/types";
-import { useShallow } from "zustand/react/shallow";
-import useAppStore from "../store";
-import { get_handle_uid } from "@/utils/canvasUtils";
+import { ASTNodeOutput, EJobNodeStatus, JobNodeStatus } from "@/type/types";
 import { Stack } from "@/components/ui/Stack";
 import { Flex } from "@/components/ui/Flex";
 import Spinner from "@/components/ui/Spinner";
 import { IconCircleCheck, IconXboxX } from "@tabler/icons-react";
-
-export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
 export default function ASTFunctionNodeJobOutput({
   output,

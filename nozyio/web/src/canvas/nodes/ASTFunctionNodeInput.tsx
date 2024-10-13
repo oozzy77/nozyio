@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Flex } from "@/components/ui/Flex";
 import ASTFunctionNodeInputBoxNumber from "./ASTFunctionNodeInputBoxNumber";
 import { useEffect, useRef, useState } from "react";
+import ServerFilePicker from "@/widgets/ServerFilePicker";
 
 export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
@@ -20,6 +21,10 @@ export default function ASTFunctionNodeInput({
   isConnected: boolean;
 }) {
   const isNumber = input.type === "int" || input.type === "float";
+  const widget = input.widget;
+  if (widget?.type === "server_file_picker") {
+    return <ServerFilePicker input={input} />;
+  }
   return (
     <div
       className={`flex relative grow w-full ${isNumber ? "h-10" : ""}`}

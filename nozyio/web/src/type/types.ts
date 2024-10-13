@@ -21,9 +21,14 @@ export type FunctionNodeData = {
     type: ParamType;
   }[];
 };
+export type NodeWidget = {
+  type: string;
+  options?: Record<string, any>;
+};
 export type ASTNodeInput = {
   id?: string;
   name?: string;
+  widget?: NodeWidget;
   type?: ParamType;
   default?: any;
   optional?: boolean;
