@@ -1,4 +1,5 @@
 dist
+nozyio.egg-info
 __pycache__/
 .env
 config.py.example

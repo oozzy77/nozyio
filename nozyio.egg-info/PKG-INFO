@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: nozyio
-Version: 0.1.2
-Summary: Node based workflow orchestration UI for python ML/AI computing
-Author-email: zoozy <nozyio.hello@gmail.com>
-Requires-Dist: aiohttp
-Requires-Dist: astpretty
