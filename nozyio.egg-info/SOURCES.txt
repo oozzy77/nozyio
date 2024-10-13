@@ -1,3 +1,4 @@
+MANIFEST.in
 README.md
 pyproject.toml
 nozyio/__init__.py
@@ -16,3 +17,17 @@ nozyio.egg-info/dependency_links.txt
 nozyio.egg-info/entry_points.txt
 nozyio.egg-info/requires.txt
 nozyio.egg-info/top_level.txt
+nozyio/web/dist/index.html
+nozyio/web/dist/vite.svg
+nozyio/web/dist/assets/CustomDrawer-CKyuU-vD.js
+nozyio/web/dist/assets/FlowCanvas-BwE79JwE.js
+nozyio/web/dist/assets/Stack-1B6MSRlq.js
+nozyio/web/dist/assets/TopMenu-7mO9A9FQ.js
+nozyio/web/dist/assets/TopMenuCodePreviewButton-BV0IK1ie.js
+nozyio/web/dist/assets/TopMenuNodes-BJFWAejp.js
+nozyio/web/dist/assets/index-9ErzGo47.js
+nozyio/web/dist/assets/index-ClcHmNCg.css
+nozyio/web/dist/assets/react-syntax-highlighter-Ca70WVaL.js
+nozyio/web/dist/assets/react-vendor-CMZ2fpGT.js
+nozyio/web/dist/assets/reactflow-vendor-DYfacRG4.js
+nozyio/web/dist/assets/shallow-D0wo54Jg.js

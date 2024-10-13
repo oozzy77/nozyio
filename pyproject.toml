@@ -15,6 +15,7 @@
     ]
     [tool.setuptools]
     packages = ["nozyio"]
+    include-package-data = true  # Ensure this is included
 
     [project.scripts]
     nozyio = "nozyio.server:start_server"

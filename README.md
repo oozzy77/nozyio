@@ -1,4 +1,4 @@
-## NozyIO
+# NozyIO
 
 **Python AI/ML pipeline orchestration UI**
 
@@ -19,11 +19,20 @@
 
 ## Development
 
-Start web dev server:
-`cd web && npm run dev`
+### pip package development:
+
+`pip install -e .`
+`nozyio`
+
+### UI development with hot reload:
 
 Start python server:
 `python -m nozyio.server --allow-cors`
+
+Start web dev server:
+`cd web && npm run dev`
+
+Go to the web server url
 
 ## Credits
 

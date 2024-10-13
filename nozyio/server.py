@@ -90,7 +90,13 @@ async def handle_refresh_node_def(request):
 
 @endpoint('/')
 async def handle_index(request):
-    return web.FileResponse(os.path.join(WEB_PATH, 'index.html'))
+    print('handle_index')
+    if os.path.exists(os.path.join(WEB_PATH, 'index.html')):
+        print('index.html exists')
+        return web.FileResponse(os.path.join(WEB_PATH, 'index.html'))
+    else:
+        print(f'{os.path.join(WEB_PATH, "index.html")} does not exist')
+        return web.Response(status=404)
 
 # Middleware to handle CORS
 @web.middleware
@@ -111,6 +117,10 @@ async def on_startup(app):
     
 def start_server():
     allow_cors = '--allow-cors' in sys.argv
+    port = int(sys.argv[sys.argv.index('--port') + 1]) if '--port' in sys.argv else 7070
+    listen = '--listen' in sys.argv
+    host = '0.0.0.0' if listen else '127.0.0.1'
+
     if allow_cors:
         print('🧪allow cors=', allow_cors)
     app = web.Application(middlewares=[cors_middleware] if allow_cors else [])
@@ -127,14 +137,12 @@ def start_server():
     
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
+    
+    # add the current directory to the python path
+    sys.path.append(os.getcwd())
 
-    # Check for --listen argument
-    if '--listen' in sys.argv:
-        host = '0.0.0.0'
-    else:
-        host = '127.0.0.1'
-
-    web.run_app(app, host=host, port=7070)
+    # print('python search path', sys.path)
+    web.run_app(app, host=host, port=port)
 
 if __name__ == "__main__":
     print("Starting aiohttp server...")
