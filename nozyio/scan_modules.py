@@ -19,12 +19,12 @@ def matches_blacklist(filepath, blacklist):
 
 def infer_type_from_default(default_value):
     """Infer the type of a parameter from its default value if it's a primitive type."""
-    if isinstance(default_value, int):
+    if isinstance(default_value, bool):
+        return 'bool'
+    elif isinstance(default_value, int):
         return 'int'
     elif isinstance(default_value, str):
         return 'str'
-    elif isinstance(default_value, bool):
-        return 'bool'
     elif isinstance(default_value, float):
         return 'float'
     else:
@@ -71,6 +71,7 @@ def extract_function_details(obj, module_name):
             # print(f'🔥Function {obj.__name__} {param_name} {param.default} {param.annotation}')
             default = param.default if is_serializable(param.default) else None
             type = infer_type_from_default(default)
+            print('⭐️infer_type_from_default', default, type)
             ast_args.append({
                 "id": str(param_name), 
                 "io_type": "input",

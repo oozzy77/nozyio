@@ -8,6 +8,7 @@ import { Flex } from "@/components/ui/Flex";
 import ASTFunctionNodeInputBoxNumber from "./ASTFunctionNodeInputBoxNumber";
 import { useEffect, useRef, useState } from "react";
 import ServerFilePicker from "@/widgets/ServerFilePicker";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
@@ -101,6 +102,20 @@ function ASTFunctionNodeInputBox({
 
   if (input.type === "int" || input.type === "float") {
     return <ASTFunctionNodeInputBoxNumber input={input} nodeID={nodeID} />;
+  }
+  if (input.type === "bool") {
+    return (
+      <Checkbox
+        className="mx-4"
+        checked={values[get_handle_uid("input", nodeID, input.id!)] ?? false}
+        onCheckedChange={(checked) => {
+          console.log("checked", checked);
+          updateValues({
+            [get_handle_uid("input", nodeID, input.id!)]: checked.valueOf(),
+          });
+        }}
+      />
+    );
   }
   if (input.type === "str") {
     return (
