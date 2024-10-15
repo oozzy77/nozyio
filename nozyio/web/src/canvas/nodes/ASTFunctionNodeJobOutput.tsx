@@ -3,6 +3,9 @@ import { Stack } from "@/components/ui/Stack";
 import { Flex } from "@/components/ui/Flex";
 import Spinner from "@/components/ui/Spinner";
 import { IconCircleCheck, IconXboxX } from "@tabler/icons-react";
+import { isValidImagePathRegex } from "@/utils/pathUtils";
+import { apiBase } from "@/common_app/app";
+import { Button } from "@/components/ui/button";
 
 export default function ASTFunctionNodeJobOutput({
   output,
@@ -32,7 +35,7 @@ export default function ASTFunctionNodeJobOutput({
       {outputsValues?.map((value: any, index: number) => (
         <Stack key={index}>
           {/* {output?.[index]?.name && <p>{output[index].name}</p>} */}
-          <div className="text-sm p-1 rounded-md border border-zinc-600 bg-zinc-700">
+          <Stack className="text-sm p-1 rounded-md border border-zinc-600 bg-zinc-700">
             {typeof value === "object" ? (
               <pre className="whitespace-pre-wrap">
                 {JSON.stringify(value, null, 2)}
@@ -40,7 +43,44 @@ export default function ASTFunctionNodeJobOutput({
             ) : (
               <pre className="whitespace-pre-wrap">{value}</pre>
             )}
-          </div>
+            {typeof value === "string" && isValidImagePathRegex(value) && (
+              <Stack>
+                <img
+                  src={
+                    apiBase + `/preview_image?path=${encodeURIComponent(value)}`
+                  }
+                  alt={"image"}
+                  className="object-contain cursor-pointer"
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                    objectFit: "contain",
+                  }}
+                  onClick={() => {
+                    window.open(
+                      apiBase +
+                        `/preview_image?path=${encodeURIComponent(value)}`,
+                      "_blank"
+                    );
+                  }}
+                />
+                <Button
+                  variant={"outline"}
+                  onClick={() => {
+                    window.open(
+                      apiBase +
+                        `/preview_image?path=${encodeURIComponent(
+                          value
+                        )}&download=1`,
+                      "_blank"
+                    );
+                  }}
+                >
+                  Download
+                </Button>
+              </Stack>
+            )}
+          </Stack>
         </Stack>
       ))}
       {status?.error && (

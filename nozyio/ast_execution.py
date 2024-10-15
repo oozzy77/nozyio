@@ -1,9 +1,11 @@
+import tempfile
 import traceback
 from nozyio.config_utils import config
 import sys
 from nozyio.code_to_graph import json_dict_to_code
 from nozyio.utils import is_serializable
 from nozyio.websocket_manager import websocket_manager
+from PIL import Image
 
 def get_handle_uid(io_type, node_id, handle_id):
     return 'node_' + node_id + '_' + io_type + '_' + handle_id
@@ -107,18 +109,19 @@ def get_execution_order(graph: dict):
     order = topological_sort(nodes, node_connection_map, set())
     return order, handle_connection_map
 
-def execute_graph(graph: dict):
+def execute_graph(graph: dict, local_vars = {}):
     order, handle_connection_map = get_execution_order(graph)
-    local_vars = {}
     job_nodes = {}
     graph['job_status'] = {'status': 'RUNNING', 'nodes': job_nodes}
     try:
+        node_outputs = []
         for node in order:
             job_nodes[node['id']] = {'status': 'RUNNING', 'results': []}
             send_job_status(graph['job_status'])
             execute_node(node, handle_connection_map, local_vars, graph.get('values', {}))
             # after execution, get the outputs
             outputs = node.get('data', {}).get('output', [])
+            node_outputs = []
             for output in outputs:
                 var_id = get_handle_uid('output', node['id'], output.get('id'))
                 res = local_vars.get(var_id, None)
@@ -127,9 +130,11 @@ def execute_graph(graph: dict):
                     job_nodes[node['id']]['results'].append(res if is_serializable(res) else f'<{type(res).__name__}>')
                 except:
                     job_nodes[node['id']]['results'].append('<object>')
+                node_outputs.append(res)
             job_nodes[node['id']]['status'] = 'SUCCESS'
             send_job_status(graph['job_status'])
         graph['job_status']['status'] = 'SUCCESS'
+        return tuple(node_outputs)
     except Exception as e:
         print('❌ error executing job', e)
         print(traceback.format_exc())

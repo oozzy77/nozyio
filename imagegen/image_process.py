@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 import requests
 from io import BytesIO
+from nozyio.config_utils import config, get_root_dir
 
 def load_image(image_path: str) -> Union[bytes, PILImage, np.ndarray]:
     if image_path.startswith('http://') or image_path.startswith('https://'):
@@ -31,6 +32,29 @@ load_image.NOZY_NODE_DEF = {
         }
     },
     "outputs": [{"name": "image", "type": "Image", "description": "Loaded image"}]
+}
+
+def save_image(image: PILImage, image_name:str = 'nozy_img') -> str:
+    output_path = os.path.join(config['output_path'], image_name + '.png')
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    count = 1
+    while os.path.exists(output_path):
+        output_path = os.path.join(config['output_path'], image_name + f"_{count}.png")
+        count += 1
+    try:
+        image.save(output_path)
+        return os.path.relpath(output_path, get_root_dir())
+    except Exception as e:
+        print(f"Error saving image: {e}")
+        return None
+save_image.NOZY_NODE_DEF = {
+    "display_name": "Save Image",
+    "description": "Save image to path",
+    "inputs": [
+        {"name": "image", "type": "Image", "description": "Image to save"}
+    ],
+    "outputs": [{"name": "image", "type": "Image", "description": "Saved image"}]
 }
 
 def remove_background(

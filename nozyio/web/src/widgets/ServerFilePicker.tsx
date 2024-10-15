@@ -8,6 +8,7 @@ import { Flex } from "@/components/ui/Flex";
 import { Stack } from "@/components/ui/Stack";
 import { CanvasState, ASTNodeInput } from "@/type/types";
 import { get_handle_uid } from "@/utils/canvasUtils";
+import { isImagePath } from "@/utils/pathUtils";
 import { IconX } from "@tabler/icons-react";
 import { useUpdateNodeInternals } from "@xyflow/react";
 import { useState } from "react";
@@ -44,6 +45,17 @@ export default function ServerFilePicker({
       </Button>
       {selectedFilePath && (
         <Stack>
+          {isImagePath(selectedFilePath) && (
+            <img
+              src={
+                apiBase +
+                `/preview_image?path=${encodeURIComponent(selectedFilePath)}`
+              }
+              alt={selectedFileName}
+              className="w-10 h-10 object-contain"
+              style={{ width: "80px", height: "80px", objectFit: "contain" }}
+            />
+          )}
           <Flex className="gap-2">
             <p className="text-sm break-all">{selectedFileName}</p>
             <Button
@@ -67,7 +79,7 @@ export default function ServerFilePicker({
           onSelect={(file) => {
             setOpen(false);
             updateValues({
-              [get_handle_uid("input", nodeID, input.id!)]: file.path,
+              [get_handle_uid("input", nodeID, input.id!)]: file.rel_path,
             });
           }}
         />

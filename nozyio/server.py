@@ -62,17 +62,25 @@ async def handle_scan_directories(request):
 @endpoint('/preview_image')
 async def handle_preview_image(request):
     path = request.rel_url.query['path']
+    download = request.rel_url.query.get('download', False)
+    print('preview_image', path)
     abs_path = os.path.join(get_root_dir(), path)
 
     if not os.path.exists(abs_path) or not os.path.isfile(abs_path):
         return web.Response(status=404, text="Image not found")
 
-    try:
-        with open(abs_path, 'rb') as image_file:
-            image_data = image_file.read()
+    with open(abs_path, 'rb') as image_file:
+        image_data = image_file.read()
+    if download:
+        return web.Response(
+        body=image_data, 
+        content_type='image/jpeg',
+        headers={
+            'Content-Disposition': f'attachment; filename="{os.path.basename(abs_path)}"'
+        })
+    else:
         return web.Response(body=image_data, content_type='image/jpeg')  # Adjust content_type as needed
-    except Exception as e:
-        return web.Response(status=500, text=str(e))
+
 
 @endpoint('/file_picker/list_files', method='POST')
 async def handle_list_files(request):

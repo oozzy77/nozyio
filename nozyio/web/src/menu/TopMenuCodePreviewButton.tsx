@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import type { CanvasState } from "@/type/types";
 import { common_app, fetchApi } from "@/common_app/app";
-import { IconCode, IconCopy } from "@tabler/icons-react";
+import {
+  IconCode,
+  IconCopy,
+  IconPin,
+  IconPinFilled,
+} from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
 import { useEffect, useState } from "react";
 import useAppStore from "@/canvas/store";
@@ -13,6 +18,7 @@ import { Highlight, themes } from "prism-react-renderer";
 
 export default function TopMenuCodePreviewButton() {
   const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
 
   return (
     <div>
@@ -29,6 +35,13 @@ export default function TopMenuCodePreviewButton() {
           position="right"
           backdrop={null}
         >
+          {/* <Button
+            className="absolute top-2 right-2 w-8 h-8"
+            variant={"ghost"}
+            onClick={() => setPinned(!pinned)}
+          >
+            {pinned ? <IconPin size={18} /> : <IconPinFilled size={18} />}
+          </Button> */}
           <CodePreview />
         </CustomDrawer>
       )}
@@ -56,7 +69,7 @@ function CodePreview() {
       });
   }, []);
   return (
-    <Stack className="px-4 py-2 w-[30vw]">
+    <Stack className="px-4 py-2 w-[36vw]">
       <h2 className="text-2xl font-bold mb-3">Code</h2>
       <p className="text-sm text-gray-500 mb-2">
         This is the python code that will be executed.
@@ -80,21 +93,22 @@ function CodePreview() {
         </Button>
       </Flex>
 
-      <div>
-        <Highlight theme={themes.shadesOfPurple} code={code} language="python">
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <pre style={style}>
-              {tokens.map((line, i) => (
-                <div key={i} {...getLineProps({ line })}>
-                  {line.map((token, key) => (
-                    <span key={key} {...getTokenProps({ token })} />
-                  ))}
-                </div>
-              ))}
-            </pre>
-          )}
-        </Highlight>
-      </div>
+      <Highlight theme={themes.shadesOfPurple} code={code} language="python">
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <pre
+            style={style}
+            className="w-full overflow-x-auto px-2 py-4 rounded-md"
+          >
+            {tokens.map((line, i) => (
+              <div key={i} {...getLineProps({ line })}>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token })} />
+                ))}
+              </div>
+            ))}
+          </pre>
+        )}
+      </Highlight>
     </Stack>
   );
 }

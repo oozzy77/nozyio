@@ -36,7 +36,7 @@ const useAppStore = create<CanvasState>((set, get) => {
   };
   return {
     workflow_id: nanoid(),
-    name: null, // workflow name
+    name: "Untitled", // workflow name
     nodes: [],
     edges: [],
     values: {},

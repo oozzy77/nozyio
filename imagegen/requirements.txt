@@ -1,0 +1,4 @@
+rembg
+requests
+torch 
+torchvision

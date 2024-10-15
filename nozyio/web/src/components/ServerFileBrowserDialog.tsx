@@ -11,7 +11,12 @@ import { IconFolder } from "@tabler/icons-react";
 import { Flex } from "./ui/Flex";
 import { Button } from "./ui/button";
 
-export type FileItem = { type: string; name: string; path: string };
+export type FileItem = {
+  type: string;
+  name: string;
+  path: string;
+  rel_path: string;
+};
 export function ServerFileBrowser({
   extensions,
   defaultPath = "",

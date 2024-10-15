@@ -4,9 +4,9 @@ __pycache__/
 .env
 config.py.example
 *.py[cod]
-/output/
+/outputs/
+/nozy_outputs/
 /input/
-!/input/example.png
 /models/
 /temp/
 /.vs
