@@ -53,7 +53,7 @@ export default function ASTFunctionNodeInput({
           <span className="text-sm font-semibold">{input.name}</span>
           {typeof input.type === "string" && (
             <span className="text-[10px] text-zinc-500 italic">
-              {input.type}
+              {input.type.split("[")[0]}
             </span>
           )}
         </div>
@@ -146,7 +146,7 @@ function ASTFunctionNodeInputBox({
         }}
       >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder={input.id} />
+          <SelectValue />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

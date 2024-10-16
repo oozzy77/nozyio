@@ -94,7 +94,7 @@ export default function ASTFunctionNode({
                     key={"output" + output.id}
                   >
                     <p className="text-[10px] text-zinc-500 italic mr-[8px]">
-                      {output.type}
+                      {output.type?.split("[")[0]}
                     </p>
 
                     <CustomHandle
