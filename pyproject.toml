@@ -22,4 +22,4 @@
     nozyio = "nozyio.server:start_server"
 
     [tool.setuptools.package-data]
-    "nozyio" = ["web/dist/*"]  # Include your web assets
+    "nozyio" = ["web/dist/*", 'bin/linux/rg', 'bin/mac/rg', 'bin/windows/rg.exe']
