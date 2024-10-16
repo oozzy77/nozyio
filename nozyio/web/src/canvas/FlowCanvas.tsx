@@ -9,7 +9,11 @@ import {
   ReactFlowProvider,
 } from "@xyflow/react";
 import { useTheme } from "@/components/ui/theme-provider";
-import { IconArrowBackUp, IconArrowForwardUp } from "@tabler/icons-react";
+import {
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconArrowsSplit2,
+} from "@tabler/icons-react";
 import { useDnD } from "./DnDContext";
 import { CanvasNode, CanvasState } from "@/type/types";
 import ASTFunctionNode from "./nodes/ASTFunctionNode";
@@ -18,6 +22,7 @@ import { useShallow } from "zustand/react/shallow";
 import { GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import undoRedoInstance from "@/utils/undoRedo";
 import { common_app, fetchApi } from "@/common_app/app";
+import { getLayoutElements } from "@/utils/flowLayoutUtils";
 
 const selector = (state: CanvasState) => ({
   nodes: state.nodes,
@@ -29,6 +34,8 @@ const selector = (state: CanvasState) => ({
   addNode: state.addNode,
   loadGraph: state.loadGraph,
   setSelectedNodeIDs: state.setSelectedNodeIDs,
+  setNodes: state.setNodes,
+  setEdges: state.setEdges,
 });
 
 const nodeTypes: NodeTypes = {
@@ -49,6 +56,8 @@ export function FlowCanvas() {
     loadGraph,
     setSelectedNodeIDs,
     setJobStatus,
+    setNodes,
+    setEdges,
   } = useAppStore(useShallow(selector));
 
   useEffect(() => {
@@ -128,6 +137,17 @@ export function FlowCanvas() {
     [screenToFlowPosition, dropingNode]
   );
 
+  const onLayout = (direction: string) => {
+    const { nodes: layoutNodes, edges: layoutEdges } = getLayoutElements(
+      nodes,
+      edges,
+      direction
+    );
+
+    setNodes([...layoutNodes]);
+    setEdges([...layoutEdges]);
+  };
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -166,6 +186,18 @@ export function FlowCanvas() {
           <IconArrowForwardUp
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4"
+          />
+        </ControlButton>
+        <ControlButton onClick={() => onLayout("LR")}>
+          <IconArrowsSplit2
+            size={16}
+            className="!fill-[none] !max-w-4 !max-h-4"
+          />
+        </ControlButton>
+        <ControlButton onClick={() => onLayout("TB")}>
+          <IconArrowsSplit2
+            size={16}
+            className="!fill-[none] !max-w-4 !max-h-4 rotate-90"
           />
         </ControlButton>
       </Controls>
