@@ -69,7 +69,8 @@ def code_to_graph(abs_path: str):
 
 if __name__ == "__main__":
     code = """
-from core.abc.ds import myfunction
+
+b = find(a=44)
 
 """
     print('python to ast json...')

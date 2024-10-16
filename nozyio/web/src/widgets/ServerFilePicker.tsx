@@ -32,12 +32,11 @@ export default function ServerFilePicker({
   const updateNodeInternals = useUpdateNodeInternals();
   const [open, setOpen] = useState(false);
   const selectedFilePath = values[get_handle_uid("input", nodeID, input.id!)];
-  console.log("selectedFilePath", selectedFilePath);
   const selectedFileName = selectedFilePath?.split(common_app.osSep).pop();
   return (
-    <Stack className="px-1 w-[200px]">
+    <Stack className="px-1 w-full">
       <Button
-        variant={"outline"}
+        // variant={"outline"}
         onClick={() => setOpen(true)}
         className="mb-2"
       >
@@ -52,8 +51,8 @@ export default function ServerFilePicker({
                 `/preview_image?path=${encodeURIComponent(selectedFilePath)}`
               }
               alt={selectedFileName}
-              className="w-10 h-10 object-contain"
-              style={{ width: "80px", height: "80px", objectFit: "contain" }}
+              className="object-contain max-w-[360px] max-h-[360px]"
+              style={{ objectFit: "contain" }}
             />
           )}
           <Flex className="gap-2">

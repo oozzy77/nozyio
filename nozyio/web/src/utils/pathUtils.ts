@@ -5,7 +5,8 @@ export function isImagePath(path: string): boolean {
 
 export function isValidImagePathRegex(path: string): boolean {
   // Ensure the path is not a directory and has a valid filename
-  const imageExtensionRegex = /(\/.*?\.(png|jpg|jpeg|gif|bmp|tiff|webp))/gim;
+  const imageExtensionRegex =
+    /[\/\\]([^\/\\]+\.(png|jpg|jpeg|gif|bmp|tiff|webp))$/i;
   const ret = imageExtensionRegex.test(path);
   return ret;
 }

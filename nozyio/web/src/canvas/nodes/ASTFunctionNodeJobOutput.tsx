@@ -35,7 +35,7 @@ export default function ASTFunctionNodeJobOutput({
       {outputsValues?.map((value: any, index: number) => (
         <Stack key={index}>
           {/* {output?.[index]?.name && <p>{output[index].name}</p>} */}
-          <Stack className="text-sm p-1 rounded-md border border-zinc-600 bg-zinc-700">
+          <Stack className="text-sm p-1 gap-1 rounded-md border border-zinc-600 bg-zinc-700">
             {typeof value === "object" ? (
               <pre className="whitespace-pre-wrap">
                 {JSON.stringify(value, null, 2)}
@@ -44,16 +44,15 @@ export default function ASTFunctionNodeJobOutput({
               <pre className="whitespace-pre-wrap">{value}</pre>
             )}
             {typeof value === "string" && isValidImagePathRegex(value) && (
-              <Stack>
+              <Stack className="gap-1">
                 <img
                   src={
                     apiBase + `/preview_image?path=${encodeURIComponent(value)}`
                   }
                   alt={"image"}
-                  className="object-contain cursor-pointer"
+                  className="object-contain cursor-pointer max-w-[800px]"
                   style={{
-                    width: "200px",
-                    height: "200px",
+                    flex: 1,
                     objectFit: "contain",
                   }}
                   onClick={() => {
@@ -65,7 +64,7 @@ export default function ASTFunctionNodeJobOutput({
                   }}
                 />
                 <Button
-                  variant={"outline"}
+                  // variant={"secondary"}
                   onClick={() => {
                     window.open(
                       apiBase +

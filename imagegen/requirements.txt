@@ -2,3 +2,6 @@ rembg
 requests
 torch 
 torchvision
+torchaudio
+transformers
+diffusers[torch]

@@ -53,7 +53,7 @@ def get_function_return_type(obj):
         "type": anno_type
     }]
 
-
+from typing import Literal
 def extract_function_details(obj, module_name):
     if inspect.isfunction(obj):
         # Get function signature
@@ -68,17 +68,20 @@ def extract_function_details(obj, module_name):
         
         # Collect information about parameters
         for index, (param_name, param) in enumerate(signature.parameters.items()):
-            # print(f'🔥Function {obj.__name__} {param_name} {param.default} {param.annotation}')
             default = param.default if is_serializable(param.default) else None
             type = infer_type_from_default(default)
-            print('⭐️infer_type_from_default', default, type)
+            if param.annotation != inspect.Parameter.empty:
+                type = getattr(param.annotation, '__name__', str(param.annotation))
+            if hasattr(param.annotation, '__origin__') and param.annotation.__origin__ is Literal:
+                type = list(param.annotation.__args__)
+            
             ast_args.append({
                 "id": str(param_name), 
                 "io_type": "input",
                 "default": default,
                 "optional": param.default is not inspect.Parameter.empty,
                 "name": param_name,
-                "type": type if type else getattr(param.annotation, '__name__', str(param.annotation)) if param.annotation != inspect.Parameter.empty else "any",
+                "type": type if type else "any",
                 **extra_input_info.get(param_name, {})
             }) 
         outputs = get_function_return_type(obj)

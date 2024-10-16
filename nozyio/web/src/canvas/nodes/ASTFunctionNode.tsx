@@ -9,6 +9,7 @@ import ASTFunctionNodeInput from "./ASTFunctionNodeInput";
 import NodeContainer from "./NodeContainer";
 import ASTFunctionNodeJobOutput from "./ASTFunctionNodeJobOutput";
 import { useEffect } from "react";
+import CustomHandle from "./CustomHandle";
 
 export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
@@ -67,7 +68,7 @@ export default function ASTFunctionNode({
             <Handle type="source" position={Position.Right} id="top" />
           </Flex>
           <Flex className="flex justify-between py-2 h-full">
-            <div className="flex flex-col gap-1 h-full w-full pr-2">
+            <div className="flex flex-col gap-2 h-full w-full pr-2">
               {data.input?.map((input) => {
                 const isConnected = edges.some(
                   (edge) => edge.target === id && edge.targetHandle === input.id
@@ -87,14 +88,14 @@ export default function ASTFunctionNode({
               {data.output?.map((output) => {
                 return (
                   <div
-                    className="relative flex items-center"
+                    className="relative flex items-center ml-3"
                     key={"output" + output.id}
                   >
-                    <p className="text-[10px] text-zinc-500 italic mr-[5px]">
+                    <p className="text-[10px] text-zinc-500 italic mr-[8px]">
                       {output.type}
                     </p>
 
-                    <Handle
+                    <CustomHandle
                       type="source"
                       position={Position.Right}
                       id={output.id}

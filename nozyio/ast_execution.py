@@ -1,11 +1,9 @@
-import tempfile
 import traceback
 from nozyio.config_utils import config
 import sys
 from nozyio.code_to_graph import json_dict_to_code
 from nozyio.utils import is_serializable
 from nozyio.websocket_manager import websocket_manager
-from PIL import Image
 
 def get_handle_uid(io_type, node_id, handle_id):
     return 'node_' + node_id + '_' + io_type + '_' + handle_id
@@ -175,7 +173,7 @@ def execute_node(node, handle_connection_map, local_vars, values):
         "body": ast_nodes,
         "type_ignores": []
     })
-    print('executing 💻', code)
+    print('⏩Executing⏩', code)
     exec(code,  globals(), local_vars)
         
     return local_vars

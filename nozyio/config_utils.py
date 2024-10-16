@@ -9,11 +9,11 @@ def get_config() -> dict:
         with open("config.json", "r") as f:
             config = json.load(f)
     config = {
-        'package_path': 'nozy_packages',
+        'package_path': 'nz_packages',
         'model_paths': ['models'],
-        'workflow_path': 'nozy_workflows',
-        'output_path': 'nozy_outputs',
-        'ignore': ['node_modules', 'venv', '.env', '.git', '__pycache__', 'dist', '.DS_Store'],
+        'workflow_path': 'nz_workflows',
+        'output_path': 'nz_outputs',
+        'ignore': ['node_modules', 'venv', '.env', '.git', '__pycache__', 'dist', '.DS_Store', 'nozyio.egg-info', 'nozyio'],
         **config,
     }
     if isinstance(config.get('package_path'), str):
