@@ -6,6 +6,9 @@ import time
 def add(a: int, b: int) -> int:
     return a + b
 
+def test_tuple_args(*arguments, **options):
+    return add(arguments[0], arguments[1])
+
 def calc_4way(a: int, b: int):
     return a + b, a - b, a * b, a / b
 calc_4way.NOZY_NODE_DEF = {

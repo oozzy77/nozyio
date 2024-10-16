@@ -83,6 +83,11 @@ export type JobStatus = {
   nodes: JobNodeStatus;
 };
 
+export type ShowSearchEvent = {
+  mouseX: number;
+  mouseY: number;
+};
+
 export type CanvasState = {
   workflow_id: string | null;
   name?: string | null;
@@ -95,12 +100,14 @@ export type CanvasState = {
     [key: string]: any;
   };
   updateValues: (change: Record<string, any>) => void;
+  showSearch: ShowSearchEvent | null;
+  setShowSearch: (show: ShowSearchEvent | null) => void;
   onNodesChange: OnNodesChange<CanvasNode>;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   setNodes: (nodes: CanvasNode[]) => void;
   setEdges: (edges: Edge[]) => void;
-  addNode: (node: CanvasNode) => void;
+  addNode: (node: Omit<CanvasNode, "id"> & { id?: string }) => void;
   selectedNodeIDs: string[];
   setSelectedNodeIDs: (node: string[]) => void;
   loadGraph: (graph: NozyGraph) => void;

@@ -6,7 +6,13 @@ import {
   Edge,
 } from "@xyflow/react";
 
-import { CanvasNode, CanvasState, JobStatus, NozyGraph } from "../type/types";
+import {
+  CanvasNode,
+  CanvasState,
+  JobStatus,
+  NozyGraph,
+  ShowSearchEvent,
+} from "../type/types";
 import { get_handle_uid, GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import { common_app } from "@/common_app/app";
 import undoRedoInstance from "@/utils/undoRedo";
@@ -34,6 +40,17 @@ const useAppStore = create<CanvasState>((set, get) => {
       })
     );
   };
+  const getNextNodeID = () => {
+    const { nodes } = get();
+    let start = 1;
+    while (start < nodes.length + 1) {
+      if (nodes.every((node) => node.id !== start.toString())) {
+        return start.toString();
+      }
+      start++;
+    }
+    return start.toString();
+  };
   return {
     workflow_id: nanoid(),
     name: "Untitled", // workflow name
@@ -43,6 +60,10 @@ const useAppStore = create<CanvasState>((set, get) => {
     selectedNodeIDs: [],
     setSelectedNodeIDs: (node: string[]) => {
       set({ selectedNodeIDs: node });
+    },
+    showSearch: null,
+    setShowSearch: (show: ShowSearchEvent | null) => {
+      set({ showSearch: show });
     },
     updateValues: (change: Record<string, any>) => {
       let newValues = { ...get().values };
@@ -99,13 +120,17 @@ const useAppStore = create<CanvasState>((set, get) => {
     setEdges: (edges) => {
       set({ edges });
     },
-    addNode: (node: CanvasNode) => {
+    addNode: (node: Omit<CanvasNode, "id"> & { id?: string }) => {
+      if (!node.id) {
+        node.id = getNextNodeID();
+      }
+
       undoRedoInstance.addUndoStack("addNode");
-      set({ nodes: get().nodes.concat(node) });
+      set({ nodes: get().nodes.concat(node as CanvasNode) });
       // add values for new node
       const newValues = { ...get().values };
       node.data.input?.forEach((input) => {
-        newValues[get_handle_uid("input", node.id, input.id!)] =
+        newValues[get_handle_uid("input", node.id!, input.id!)] =
           input.default ?? null;
       });
       set({ values: newValues });

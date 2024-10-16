@@ -3,6 +3,22 @@ import os
 import platform
 import stat
 import subprocess
+import re
+
+def get_ripgrep_binary():
+    system = platform.system().lower()
+
+    if system == "linux":
+        return os.path.join(os.path.dirname(__file__), 'bin', 'linux', 'rg')
+    elif system == "darwin":
+        return os.path.join(os.path.dirname(__file__), 'bin', 'mac', 'rg')
+    elif system == "windows":
+        return os.path.join(os.path.dirname(__file__), 'bin', 'windows', 'rg.exe')
+    else:
+        raise OSError(f"Unsupported operating system: {system}")
+
+
+
 
 def ensure_executable_permissions(binary_path):
     """Ensure the binary has executable permissions (only on Unix-like systems)."""
@@ -17,40 +33,28 @@ def ensure_executable_permissions(binary_path):
         # On Windows, we assume the binary (e.g., .exe) doesn't need this check
         pass
 
-def get_ripgrep_binary():
-    system = platform.system().lower()
-
-    if system == "linux":
-        return os.path.join(os.path.dirname(__file__), 'bin', 'linux', 'rg')
-    elif system == "darwin":
-        return os.path.join(os.path.dirname(__file__), 'bin', 'mac', 'rg')
-    elif system == "windows":
-        return os.path.join(os.path.dirname(__file__), 'bin', 'windows', 'rg.exe')
-    else:
-        raise OSError(f"Unsupported operating system: {system}")
-
-import subprocess
-import re
+binary_path = get_ripgrep_binary()
+ensure_executable_permissions(binary_path)
 
 def search_codebase(search_term):
     def parse_match(line):
         # Regex pattern to capture file path, line number, and definition type and name
         pattern = r'^(?P<file_path>.*?):\d+:\s*(?P<type>class|def)\s+(?P<name>\w+)'
         match = re.match(pattern, line)
+        file_path = os.path.relpath(match.group("file_path"))
         if match:
             return {
                 "name": match.group("name"),
                 "type": "class" if match.group("type") == "class" else "function",
-                "file_path": match.group("file_path")
+                "file_path": file_path
             }
         return None
 
-    # Run ripgrep to search for class and function definitions
-    binary_path = get_ripgrep_binary()
     rg_command = [
         binary_path, '-n', '--no-heading', '--color', 'never',
         r'^\s*(class|def)\s+\w+',  # regex to find class and function definitions
-        '.'
+        '.',
+        '--glob', '*.py',  # Include only .py files
     ]
     
     try:

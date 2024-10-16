@@ -3,13 +3,14 @@ import json
 import sys
 from aiohttp import web
 import os
-from nozyio.code_to_graph import code_to_graph
-from nozyio.ast_execution import execute_graph, graph_to_code
-from nozyio.file_picker import list_files
-from nozyio.scan_modules import refresh_node_def, scan_directory
-from nozyio.config_utils import config, get_root_dir
-from nozyio.websocket_manager import websocket_manager
-from nozyio.job_queue_manager import on_cleanup, process_queue, run_in_executor
+from .code_to_graph import code_to_graph
+from .ast_execution import execute_graph, graph_to_code
+from .file_picker import list_files
+from .scan_modules import refresh_node_def, scan_directory
+from .config_utils import config, get_root_dir
+from .search_codebase import search_codebase
+from .websocket_manager import websocket_manager
+from .job_queue_manager import on_cleanup, process_queue, run_in_executor
 
 WEB_PATH = os.path.join(os.path.dirname(__file__), 'web/dist')
 
@@ -123,6 +124,12 @@ async def websocket_handler(request):
         print('WebSocket connection closed')
 
     return ws
+
+@endpoint('/search_functions')
+async def handle_search_functions(request):
+    query = request.rel_url.query['query']
+    results = search_codebase(query)
+    return web.json_response(results)
 
 @endpoint('/refresh_node_def', method='POST')
 async def handle_refresh_node_def(request):
