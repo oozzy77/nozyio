@@ -117,11 +117,8 @@ async def websocket_handler(request):
                 await websocket_manager.send_message(f"Echo: {msg.data}")
             elif msg.type == web.WSMsgType.ERROR:
                 print(f"WebSocket connection closed with exception {ws.exception()}")
-    except asyncio.CancelledError:
-        print('WebSocket connection cancelled')
     finally:
-        ws.close()  # Close the WebSocket immediately
-        print('WebSocket connection closed')
+        ws.close() 
 
     return ws
 

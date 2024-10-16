@@ -25,6 +25,35 @@ def infer_type_from_default(default):
     else:
         return None
 
+import ast
+import json
+from typing import Literal
+
+def is_serializable(value):
+    try:
+        json.dumps(value)
+        return True
+    except:
+        return False
+
+def infer_type_from_default(default):
+    if default is None:
+        return None
+    elif isinstance(default, bool):
+        return 'bool'
+    elif isinstance(default, int):
+        return 'int'
+    elif isinstance(default, float):
+        return 'float'
+    elif isinstance(default, str):
+        return 'str'
+    elif isinstance(default, list):
+        return 'list'
+    elif isinstance(default, dict):
+        return 'dict'
+    else:
+        return None
+
 def extract_function_info_from_ast(function_node, module_name):
     # Get the function name
     function_name = function_node.name
@@ -58,7 +87,31 @@ def extract_function_info_from_ast(function_node, module_name):
     # Helper function to process annotations
     def process_annotation(annotation):
         if annotation is not None:
-            return ast.unparse(annotation)
+            # Check if the annotation is a Literal
+            if (isinstance(annotation, ast.Subscript) and
+                isinstance(annotation.value, ast.Name) and
+                annotation.value.id == 'Literal'):
+                # Extract the values inside Literal
+                if isinstance(annotation.slice, ast.Tuple):
+                    # Multiple values
+                    literal_values = []
+                    for elt in annotation.slice.elts:
+                        try:
+                            value = ast.literal_eval(elt)
+                            literal_values.append(value)
+                        except:
+                            pass  # Cannot evaluate
+                    return literal_values
+                else:
+                    # Single value
+                    try:
+                        value = ast.literal_eval(annotation.slice)
+                        return [value]
+                    except:
+                        pass  # Cannot evaluate
+            else:
+                # For other annotations, unparse to get the string representation
+                return ast.unparse(annotation)
         return None
 
     # Process positional arguments
@@ -164,18 +217,18 @@ def extract_function_info_from_ast(function_node, module_name):
     # Handle outputs (return type annotation)
     outputs = []
     if function_node.returns is not None:
-        if isinstance(function_node.returns, ast.Tuple):
-            for elt in function_node.returns.elts:
-                output_type = ast.unparse(elt)
+        return_annotation = process_annotation(function_node.returns)
+        if isinstance(return_annotation, list):
+            # Multiple output types
+            for output_type in return_annotation:
                 outputs.append({
                     "id": None,
                     "type": output_type
                 })
         else:
-            output_type = ast.unparse(function_node.returns)
             outputs.append({
                 "id": None,
-                "type": output_type
+                "type": return_annotation
             })
     else:
         outputs.append({
