@@ -7,6 +7,7 @@ import time
 import json
 import traceback
 from nozyio.config_utils import config, get_root_dir
+from nozyio.scan_modules_ast import parse_python_file
 from nozyio.utils import is_serializable
 
 def matches_blacklist(filepath, blacklist):
@@ -165,19 +166,20 @@ def list_functions_classes(py_file_path):
     module_name = package_rel_path.replace(os.sep, '.').rsplit('.', 1)[0]
     print('👾 module_name', module_name)
     # load and execute the module to inspect its contents
-    module = importlib.import_module(module_name)
+    details = parse_python_file(py_file_path, module_name)
+    # module = importlib.import_module(module_name)
 
-    details = []
-    for name, obj in inspect.getmembers(module):
-        if inspect.isfunction(obj) and obj.__module__ == module.__name__:
-            # Handle functions
-            print(f'😁 find function {name}')
-            func_info = extract_function_details(obj, module.__name__)
-            details.append(func_info)
-        # elif inspect.isclass(obj) and obj.__module__ == module.__name__:
-        #     # Handle classes
-        #     class_info = extract_class_details(obj, module.__name__)
-        #     details.append(class_info)
+    # details = []
+    # for name, obj in inspect.getmembers(module):
+    #     if inspect.isfunction(obj) and obj.__module__ == module.__name__:
+    #         # Handle functions
+    #         print(f'😁 find function {name}')
+    #         func_info = extract_function_details(obj, module.__name__)
+    #         details.append(func_info)
+    #     elif inspect.isclass(obj) and obj.__module__ == module.__name__:
+    #         # Handle classes
+    #         class_info = extract_class_details(obj, module.__name__)
+    #         details.append(class_info)
     
     return details
 

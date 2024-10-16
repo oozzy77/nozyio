@@ -1,10 +1,19 @@
 import ast
 
 def infer_type_from_annotation(annotation):
-    """Infer type from annotation."""
-    if annotation:
-        return ast.unparse(annotation)
-    return "Any"
+    """Infer the type from an annotation."""
+    if isinstance(annotation, ast.Name):
+        return annotation.id
+    elif isinstance(annotation, ast.Subscript) and isinstance(annotation.value, ast.Name) and annotation.value.id == 'Literal':
+        # Check if the slice is a Tuple and extract elements
+        if isinstance(annotation.slice, ast.Index):
+            slice_value = annotation.slice.value
+        else:
+            slice_value = annotation.slice
+
+        if isinstance(slice_value, ast.Tuple):
+            return [elt.s for elt in slice_value.elts if isinstance(elt, ast.Str)]
+    return "any"
 
 def infer_type_from_default(default_value):
     """Infer the type of a parameter from its default value if it's a primitive type."""
