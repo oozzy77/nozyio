@@ -1,3 +1,4 @@
+import json
 import os
 import platform
 import stat
@@ -28,11 +29,24 @@ def get_ripgrep_binary():
     else:
         raise OSError(f"Unsupported operating system: {system}")
 
+import subprocess
+import re
+
 def search_codebase(search_term):
+    def parse_match(line):
+        # Regex pattern to capture file path, line number, and definition type and name
+        pattern = r'^(?P<file_path>.*?):\d+:\s*(?P<type>class|def)\s+(?P<name>\w+)'
+        match = re.match(pattern, line)
+        if match:
+            return {
+                "name": match.group("name"),
+                "type": "class" if match.group("type") == "class" else "function",
+                "file_path": match.group("file_path")
+            }
+        return None
+
     # Run ripgrep to search for class and function definitions
     binary_path = get_ripgrep_binary()
-    # ensure_executable_permissions(binary_path)
-    # result = subprocess.run([binary_path, search_term], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     rg_command = [
         binary_path, '-n', '--no-heading', '--color', 'never',
         r'^\s*(class|def)\s+\w+',  # regex to find class and function definitions
@@ -44,7 +58,10 @@ def search_codebase(search_term):
         
         if result.returncode == 0:
             matches = result.stdout.splitlines()
-            return [match for match in matches if search_term.lower() in match.lower()]
+            # Filter the matches based on the search term
+            filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
+            # Parse each match to extract the relevant information
+            return [parse_match(match) for match in filtered_matches if parse_match(match)]
         else:
             return []
     except Exception as e:
@@ -56,10 +73,7 @@ def typeahead_search():
     while search_term:
         # Fetch the results from the codebase based on the search term
         matches = search_codebase(search_term)
-        if matches:
-            print("\n".join(matches))
-        else:
-            print("No matches found.")
+        print("\n".join(json.dumps(match) for match in matches))
         
         search_term = input("Start typing class/function name: ")
 
