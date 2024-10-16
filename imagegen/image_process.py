@@ -49,7 +49,7 @@ def save_image(image: PILImage, image_name:str = 'nozy_img') -> str:
         print(f"Error saving image: {e}")
         return None
 save_image.NOZY_NODE_DEF = {
-    "display_name": "Save Image",
+    "node_title": "Save Image",
     "description": "Save image to path",
     "inputs": [
         {"name": "image", "type": "Image", "description": "Image to save"}
@@ -66,7 +66,7 @@ def remove_background_rembg(
 ) -> Union[bytes, PILImage, np.ndarray]:
     return remove(image, alpha_matting=alpha_matting, alpha_matting_foreground_threshold=alpha_matting_foreground_threshold, alpha_matting_background_threshold=alpha_matting_background_threshold, alpha_matting_erode_size=alpha_matting_erode_size)
 remove_background_rembg.NOZY_NODE_DEF = {
-    "display_name": "Remove Background REMBG",
+    "node_title": "Remove Background REMBG",
     "description": "Remove background from image using rembg",
     "inputs": [
         {

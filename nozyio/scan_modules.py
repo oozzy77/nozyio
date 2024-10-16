@@ -124,7 +124,7 @@ def extract_function_details(obj, module_name):
         
         return {
             "type": "function",
-            "display_name": nozy_node_def.get('display_name', obj.__name__),
+            "node_title": nozy_node_def.get('node_title', obj.__name__),
             "description": nozy_node_def.get('description', None),
             "name": obj.__name__,
             "module": module_name,

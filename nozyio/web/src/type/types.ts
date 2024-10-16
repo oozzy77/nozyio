@@ -43,6 +43,8 @@ export type ASTNodeOutput = {
 export type ASTNodeData = {
   type: "function" | "class";
   name: string;
+  node_title?: string;
+  description?: string;
   module: string;
   import_error?: string;
   input?: ASTNodeInput[];
