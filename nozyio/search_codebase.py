@@ -1,9 +1,12 @@
+import importlib
+import inspect
 import json
 import os
 import platform
 import stat
 import subprocess
 import re
+from .scan_modules import extract_function_details
 
 def get_ripgrep_binary():
     system = platform.system().lower()
@@ -40,6 +43,7 @@ def search_codebase(search_term):
     def parse_match(line):
         # Regex pattern to capture file path, line number, and definition type and name
         pattern = r'^(?P<file_path>.*?):\d+:\s*(?P<type>class|def)\s+(?P<name>\w+)'
+        # pattern = r'^(?P<file_path>.*?):\d+:\s*def\s+(?P<name>\w+)\s*\(' # search module level functions only
         match = re.match(pattern, line)
         file_path = os.path.relpath(match.group("file_path"))
         if match:
@@ -56,20 +60,33 @@ def search_codebase(search_term):
         '.',
         '--glob', '*.py',  # Include only .py files
     ]
+
+    result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     
-    try:
-        result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        
-        if result.returncode == 0:
-            matches = result.stdout.splitlines()
-            # Filter the matches based on the search term
-            filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
-            # Parse each match to extract the relevant information
-            return [parse_match(match) for match in filtered_matches if parse_match(match)]
-        else:
-            return []
-    except Exception as e:
-        print(f"An error occurred while running ripgrep: {e}")
+    if result.returncode == 0:
+        matches = result.stdout.splitlines()
+        # Filter the matches based on the search term
+        filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
+        # Parse each match to extract file_path, function name, type
+        search_results = [parse_match(match) for match in filtered_matches if parse_match(match)]
+        # import modules to extract function details
+        for index, result in enumerate(search_results):
+            try:
+                relative_path = os.path.relpath(result['file_path'])
+                module_name = os.path.splitext(relative_path)[0].replace(os.path.sep, '.')
+                module = importlib.import_module(module_name)
+                if hasattr(module, result['name']):
+                    function_obj = getattr(module, result['name'])
+                    func_info = extract_function_details(function_obj, module.__name__)
+                    search_results[index] = func_info
+                else:
+                    # is class or instance method
+                    search_results[index] = None
+            except Exception as e:
+                search_results[index] = None
+                print(e)
+        return search_results
+    else:
         return []
 
 def typeahead_search():

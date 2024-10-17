@@ -121,13 +121,17 @@ export function FlowCanvas() {
     [screenToFlowPosition, dropingNode]
   );
   const onPaneClick = useCallback((event: MouseEvent) => {
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
     setSelectedNodeIDs([]);
     const now = Date.now();
     if (lastClickTime.current && now - lastClickTime.current < 300) {
-      console.log("Pane double-clicked");
       setShowSearch({
-        mouseX: event.clientX,
-        mouseY: event.clientY,
+        mouseX: position.x,
+        mouseY: position.y,
       });
     } else {
       setShowSearch(null);
