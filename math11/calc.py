@@ -26,7 +26,7 @@ calc_4way.NOZY_NODE_DEF = {
             "min": -10.0, "max": 10.0, "step": 0.01
         }
     },
-    "output": ["float", "float", "float", "float"],
+    "output": [{"type": "float", "name": "sum"}, {"type": "float", "name": "difference"}, {"type": "float", "name": "product"}, {"type": "float", "name": "quotient"}],
 }
 
 def random_string(length: int = 10) -> str:

@@ -220,19 +220,19 @@ def extract_function_info_from_ast(function_node, module_name):
         return_annotation = process_annotation(function_node.returns)
         if isinstance(return_annotation, list):
             # Multiple output types
-            for output_type in return_annotation:
+            for index, output_type in enumerate(return_annotation):
                 outputs.append({
-                    "id": None,
+                    "id": index,
                     "type": output_type
                 })
         else:
             outputs.append({
-                "id": None,
+                "id": "0",
                 "type": return_annotation
             })
     else:
         outputs.append({
-            "id": None,
+            "id": "0",
             "type": "any"
         })
 
@@ -294,14 +294,47 @@ def parse_python_file(file_path, module_name):
         source_code = file.read()
 
     tree = ast.parse(source_code)
-    functions = []
+    functions = {}
 
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
+            # Extract function information
             func_info = extract_function_info_from_ast(node, module_name)
-            functions.append(func_info)
+            functions[node.name] = func_info
 
-    return functions
+        elif isinstance(node, ast.Assign):
+            # is NOZY_NODE_DEF assign
+            for target in node.targets:
+                if isinstance(target, ast.Attribute) and target.attr == 'NOZY_NODE_DEF':
+                    if isinstance(target.value, ast.Name):
+                        function_name = target.value.id
+                        try:
+                            nozy_node_def = ast.literal_eval(node.value)
+                            nozy_def_inputs = nozy_node_def.get('inputs', nozy_node_def.get('input', {}))
+                            if isinstance(nozy_def_inputs, list):
+                                nozy_def_inputs = {f'{input_type['name']}': input_type for i, input_type in enumerate(nozy_def_inputs)}
+                            if function_name in functions:
+                                # is valid NOZY_NODE_DEF attribute assign
+                                functions[function_name]['node_title'] = nozy_node_def.get('node_title', None)
+                                functions[function_name]['description'] = nozy_node_def.get('description', functions[function_name]['description'])
+                                for index, input in enumerate(functions[function_name]['input']):
+                                    if input['name'] in nozy_def_inputs:
+                                        functions[function_name]['input'][index] = {
+                                            **input,
+                                            **nozy_def_inputs[input['name']]
+                                        }
+                                nozy_def_outputs = nozy_node_def.get('outputs', nozy_node_def.get('output', {}))
+                                if nozy_def_outputs:
+                                    functions[function_name]['output'] = [
+                                        {
+                                            **(functions[function_name]['output'][index] if index < len(functions[function_name]['output']) else {}),
+                                            **nozy_def_outputs[index],
+                                        } for index, output in enumerate(nozy_def_outputs)
+                                    ]
+                        except:
+                            pass
+
+    return list(functions.values())
 
 if __name__ == "__main__":
     # Example usage
