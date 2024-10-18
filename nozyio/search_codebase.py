@@ -8,6 +8,17 @@ import subprocess
 import re
 from .scan_modules import extract_function_details
 
+import pkg_resources
+
+def get_pip_packages_list() -> list:
+    packages = []
+    for dist in pkg_resources.working_set:
+        packages.append({
+            'name': dist.project_name,
+            'version': dist.version
+        })
+    return packages
+
 def get_ripgrep_binary():
     system = platform.system().lower()
 
@@ -19,9 +30,6 @@ def get_ripgrep_binary():
         return os.path.join(os.path.dirname(__file__), 'bin', 'windows', 'rg.exe')
     else:
         raise OSError(f"Unsupported operating system: {system}")
-
-
-
 
 def ensure_executable_permissions(binary_path):
     """Ensure the binary has executable permissions (only on Unix-like systems)."""
@@ -62,13 +70,14 @@ def search_codebase(search_term):
     ]
 
     result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    
+    MAX_RESULTS = 10
     if result.returncode == 0:
         matches = result.stdout.splitlines()
         # Filter the matches based on the search term
         filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
         # Parse each match to extract file_path, function name, type
         search_results = [parse_match(match) for match in filtered_matches if parse_match(match)]
+        search_results = search_results[:MAX_RESULTS]
         # import modules to extract function details
         for index, result in enumerate(search_results):
             try:
