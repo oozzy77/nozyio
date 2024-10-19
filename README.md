@@ -1,10 +1,8 @@
 # NozyIO
 
-**Python AI/ML pipeline visualization and orchestration UI for your codebase**
+**Python AI/ML pipeline visualization and orchestration UI for your codebase**. Add a pipeline workflow GUI demo to your python project effortlessly.
 
 demo: https://www.youtube.com/watch?v=8rvxua4AmAo
-
-graph flow UI ↔️ python code
 
 - Workflow nodes editor for your python code
 - **Automatically scan your python functions to nodes** with params typing
