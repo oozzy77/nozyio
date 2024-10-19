@@ -1,6 +1,7 @@
 import { useDnD } from "@/canvas/DnDContext";
 import { fetchApi } from "@/common_app/app";
 import { Flex } from "@/components/ui/Flex";
+import Spinner from "@/components/ui/Spinner";
 import { Stack } from "@/components/ui/Stack";
 import { FunctionNodeData } from "@/type/types";
 import {
@@ -19,18 +20,24 @@ type FunctionFileTreeNode = {
 export default function FunctionFilesList({ path }: { path: string }) {
   const [nodes, setNodes] = useState<FunctionFileTreeNode[]>([]);
   const { setDropingNode } = useDnD();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     fetchApi("/list_package_children?path=" + encodeURIComponent(path))
       .then((response) => {
         return response.json();
       })
       .then((data) => {
         setNodes(data);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
+        {loading && <Spinner />}
         {nodes.map((node) => {
           if (node.type === "folder") {
             return <FolderNode node={node} key={node.path} />;
@@ -48,7 +55,7 @@ export default function FunctionFilesList({ path }: { path: string }) {
               }}
             >
               <Flex>
-                <p>{node.name}</p>
+                <p className="text-muted-foreground">{node.name}</p>
               </Flex>
               {node.functions?.map((functionNode) => {
                 return (
@@ -58,10 +65,10 @@ export default function FunctionFilesList({ path }: { path: string }) {
                       console.log(functionNode);
                       setDropingNode(functionNode);
                     }}
-                    className="flex flex-row items-center ml-3 gap-1 cursor-pointer hover:bg-secondary"
+                    className="flex flex-row items-center ml-2 py-1 font-semibold gap-1 cursor-pointer hover:bg-secondary"
                     key={node.path + "_" + functionNode.name}
                   >
-                    <IconBrandTabler size={16} />
+                    <IconBrandTabler size={18} />
                     <span>{functionNode.name}</span>
                   </div>
                 );

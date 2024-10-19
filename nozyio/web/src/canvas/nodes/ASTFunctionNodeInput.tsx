@@ -11,14 +11,6 @@ import ServerFilePicker from "@/widgets/ServerFilePicker";
 import { Checkbox } from "@/components/ui/checkbox";
 import CustomHandle from "./CustomHandle";
 import { Stack } from "@/components/ui/Stack";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
@@ -53,7 +45,7 @@ export default function ASTFunctionNodeInput({
           <span className="text-sm font-semibold">{input.name}</span>
           {typeof input.type === "string" && (
             <span className="text-[10px] text-zinc-500 italic">
-              {input.type}
+              {input.type.split("[")[0]}
             </span>
           )}
         </div>
@@ -137,27 +129,22 @@ function ASTFunctionNodeInputBox({
 
   if (Array.isArray(input.type)) {
     return (
-      <Select
+      <select
+        id="countries"
         value={values[get_handle_uid("input", nodeID, input.id!)] ?? ""}
-        onValueChange={(value) => {
+        onChange={(e) => {
           updateValues({
-            [get_handle_uid("input", nodeID, input.id!)]: value,
+            [get_handle_uid("input", nodeID, input.id!)]: e.target.value,
           });
         }}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder={input.id} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {input.type.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        {input.type.map((type) => (
+          <option key={type} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
     );
   }
 

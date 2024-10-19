@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import {
   ReactFlow,
   type NodeTypes,
@@ -7,6 +7,7 @@ import {
   Background,
   useReactFlow,
   ReactFlowProvider,
+  OnConnectEnd,
 } from "@xyflow/react";
 import { useTheme } from "@/components/ui/theme-provider";
 import {
@@ -23,6 +24,7 @@ import { GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import undoRedoInstance from "@/utils/undoRedo";
 import { common_app, fetchApi } from "@/common_app/app";
 import { getLayoutElements } from "@/utils/flowLayoutUtils";
+import NodesTypeaheadSearch from "@/components/NodesTypeaheadSearch";
 
 const selector = (state: CanvasState) => ({
   nodes: state.nodes,
@@ -36,6 +38,7 @@ const selector = (state: CanvasState) => ({
   setSelectedNodeIDs: state.setSelectedNodeIDs,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
+  setShowSearch: state.setShowSearch,
 });
 
 const nodeTypes: NodeTypes = {
@@ -58,6 +61,7 @@ export function FlowCanvas() {
     setJobStatus,
     setNodes,
     setEdges,
+    setShowSearch,
   } = useAppStore(useShallow(selector));
 
   useEffect(() => {
@@ -100,17 +104,7 @@ export function FlowCanvas() {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
-
-  const getNextNodeID = useCallback(() => {
-    let start = 1;
-    while (start < nodes.length + 1) {
-      if (nodes.every((node) => node.id !== start.toString())) {
-        return start.toString();
-      }
-      start++;
-    }
-    return start.toString();
-  }, [nodes]);
+  const lastClickTime = useRef(0);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
@@ -124,8 +118,7 @@ export function FlowCanvas() {
         x: event.clientX,
         y: event.clientY,
       });
-      const newNode: CanvasNode = {
-        id: getNextNodeID(),
+      const newNode = {
         data: dropingNode,
         position: position,
         type: "astFunction",
@@ -136,6 +129,27 @@ export function FlowCanvas() {
     },
     [screenToFlowPosition, dropingNode]
   );
+  const onPaneClick = useCallback((event: MouseEvent) => {
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    setSelectedNodeIDs([]);
+    const now = Date.now();
+    if (lastClickTime.current && now - lastClickTime.current < 300) {
+      setShowSearch({
+        mouseX: position.x,
+        mouseY: position.y,
+      });
+    } else {
+      setShowSearch(null);
+    }
+    lastClickTime.current = now;
+  }, []);
+  const onConnectEnd: OnConnectEnd = useCallback((event, params) => {
+    // setShowSearch(null);
+  }, []);
 
   const onLayout = (direction: string) => {
     const { nodes: layoutNodes, edges: layoutEdges } = getLayoutElements(
@@ -169,10 +183,9 @@ export function FlowCanvas() {
         console.log("node click #" + node.id);
         setSelectedNodeIDs([node.id]);
       }}
-      onPaneClick={() => {
-        console.log("pane click");
-        setSelectedNodeIDs([]);
-      }}
+      onPaneClick={onPaneClick}
+      onConnectEnd={onConnectEnd}
+      zoomOnDoubleClick={false}
     >
       <Background />
       <Controls orientation="horizontal">
@@ -206,9 +219,14 @@ export function FlowCanvas() {
 }
 
 export default function FlowCanvasWithProvider() {
+  const { showSearch } = useAppStore(
+    useShallow((state) => ({ showSearch: state.showSearch }))
+  );
+
   return (
     <ReactFlowProvider>
       <FlowCanvas />
+      {showSearch && <NodesTypeaheadSearch showSearch={showSearch} />}
     </ReactFlowProvider>
   );
 }

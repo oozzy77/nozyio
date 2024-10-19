@@ -63,7 +63,9 @@ export default function ASTFunctionNode({
           >
             <Handle type="target" position={Position.Left} id="top" />
             <Flex className="justify-between  flex-grow">
-              <p className="px-2 font-semibold">{data.name}</p>
+              <p className="px-2 font-semibold">
+                {data.node_title ?? data.name}
+              </p>
             </Flex>
             <Handle type="source" position={Position.Right} id="top" />
           </Flex>
@@ -92,7 +94,7 @@ export default function ASTFunctionNode({
                     key={"output" + output.id}
                   >
                     <p className="text-[10px] text-zinc-500 italic mr-[8px]">
-                      {output.type}
+                      {output.type?.split("[")[0]}
                     </p>
 
                     <CustomHandle

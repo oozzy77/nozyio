@@ -13,6 +13,8 @@ def get_config() -> dict:
         'model_paths': ['models'],
         'workflow_path': 'nz_workflows',
         'output_path': 'nz_outputs',
+        'HF_HOME': './models',
+        'HF_HUB_OFFLINE': 'True',
         'ignore': ['node_modules', 'venv', '.env', '.git', '__pycache__', 'dist', '.DS_Store', 'nozyio.egg-info', 'nozyio'],
         **config,
     }
@@ -28,6 +30,8 @@ def get_config() -> dict:
         config['output_path'] = os.path.join(current_dir, config['output_path'])
 
     sys.path.append(config['package_path'])
+    os.environ['HF_HOME'] = config['HF_HOME']
+    os.environ['HF_HUB_OFFLINE'] = config['HF_HUB_OFFLINE']
     return config
 
 def get_root_dir():

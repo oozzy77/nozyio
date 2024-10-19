@@ -7,6 +7,7 @@ import time
 import json
 import traceback
 from nozyio.config_utils import config, get_root_dir
+from nozyio.scan_modules_ast import parse_python_file
 from nozyio.utils import is_serializable
 
 def matches_blacklist(filepath, blacklist):
@@ -124,7 +125,7 @@ def extract_function_details(obj, module_name):
         
         return {
             "type": "function",
-            "display_name": nozy_node_def.get('display_name', obj.__name__),
+            "node_title": nozy_node_def.get('node_title', obj.__name__),
             "description": nozy_node_def.get('description', None),
             "name": obj.__name__,
             "module": module_name,
@@ -165,6 +166,7 @@ def list_functions_classes(py_file_path):
     module_name = package_rel_path.replace(os.sep, '.').rsplit('.', 1)[0]
     print('👾 module_name', module_name)
     # load and execute the module to inspect its contents
+    # details = parse_python_file(py_file_path, module_name)
     module = importlib.import_module(module_name)
 
     details = []

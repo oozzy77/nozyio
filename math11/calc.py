@@ -6,6 +6,9 @@ import time
 def add(a: int, b: int) -> int:
     return a + b
 
+def test_tuple_args(*arguments, **options):
+    return add(arguments[0], arguments[1])
+
 def calc_4way(a: int, b: int):
     return a + b, a - b, a * b, a / b
 calc_4way.NOZY_NODE_DEF = {
@@ -23,7 +26,7 @@ calc_4way.NOZY_NODE_DEF = {
             "min": -10.0, "max": 10.0, "step": 0.01
         }
     },
-    "output": ["float", "float", "float", "float"],
+    "output": [{"type": "float", "name": "sum"}, {"type": "float", "name": "difference"}, {"type": "float", "name": "product"}, {"type": "float", "name": "quotient"}],
 }
 
 def random_string(length: int = 10) -> str:
