@@ -4,7 +4,7 @@
 
     [project]
     name = "nozyio"
-    version = "0.1.5"
+    version = "0.1.6"
     description = "Node based workflow orchestration UI for python ML/AI computing"
     readme = "README.md"
     authors = [
