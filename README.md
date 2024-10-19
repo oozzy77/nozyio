@@ -25,6 +25,29 @@ To start the nozyio UI:
 
 ## Usage
 
+**Super easy node define (just write a function with typing) For example:**
+
+```python
+from PIL.Image import Image
+
+def resize_image(
+    image: Image,
+    width: int = 512,
+    height: int = 512,
+    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"] = "stretch",
+    interpolation: str = "nearest"
+) -> Image:
+    # ...some code here...
+    return image.resize((width, height), interp_method)
+resize_image.NOZY_NODE_DEF = {
+    "node_title": "Resize Image",
+}
+
+```
+👇This function will be rendered as below. You can see that all args default values are also the default value for the input box UI
+ 
+<img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
+
 **👇Export workflow to code**
 
 <img width="1728" alt="378069723-64a69234-5532-43a4-b192-415317be6fcd-min" src="https://github.com/user-attachments/assets/b93e8de8-35aa-4144-a41d-10ede476a74d">
@@ -49,30 +72,7 @@ Nozyio will automatically scan your python functions and convert them to nodes. 
 | `Literal["abc", "xyz"]` | dropdown input box | `<select>`              |
 | `PIL.Image.Image`       | image preview      | `<img>`                 |
 
-**Example 1:**
-
-```python
-from PIL.Image import Image
-
-def resize_image(
-    image: Image,
-    width: int = 512,
-    height: int = 512,
-    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"] = "stretch",
-    interpolation: str = "nearest"
-) -> Image:
-    # ...some code here...
-    return image.resize((width, height), interp_method)
-resize_image.NOZY_NODE_DEF = {
-    "node_title": "Resize Image",
-    "description": "Resize image to provided width and height",
-}
-```
-👆This function will be rendered as below. You can see that all args default values are also the default value for the input box UI
- 
-<img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
-
-**Example 2:**
+**Example:**
 
 You can also add custom **UI widgets** to the input parameters by adding a `widget` field to the input definition. In below example, we use `server_file_picker` widget to let user select an image file from the files on the server:
 
