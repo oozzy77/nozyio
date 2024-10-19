@@ -2,12 +2,12 @@ from diffusers import AutoPipelineForText2Image
 import torch
 from nozyio import device_management
 
-def text_to_image(prompt):
+def text_to_image(prompt:str = "An astrounaut riding a horse"):
     pipeline = AutoPipelineForText2Image.from_pretrained(
         "stable-diffusion-v1-5/stable-diffusion-v1-5", torch_dtype=torch.float16, variant="fp16"
     ).to(device_management.device)
     generator = torch.Generator(device_management.device).manual_seed(31)
-    image = pipeline("Astronaut in a jungle, cold color palette, muted colors, detailed, 8k", generator=generator).images[0]
+    return pipeline(prompt, generator=generator).images[0]
 
 
 # import torch

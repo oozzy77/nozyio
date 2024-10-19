@@ -16,7 +16,6 @@ export default defineConfig({
         manualChunks: {
           "react-vendor": ["react", "react-dom"],
           "reactflow-vendor": ["@xyflow/react"],
-          "react-syntax-highlighter": ["react-syntax-highlighter"],
         },
       },
     },

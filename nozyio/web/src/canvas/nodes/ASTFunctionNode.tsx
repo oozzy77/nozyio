@@ -10,6 +10,7 @@ import NodeContainer from "./NodeContainer";
 import ASTFunctionNodeJobOutput from "./ASTFunctionNodeJobOutput";
 import { useEffect } from "react";
 import CustomHandle from "./CustomHandle";
+import { TOP_HANDLE_ID } from "@/utils/consts";
 
 export type ASTFunctionNode = Node<ASTNodeData, "function">;
 
@@ -61,13 +62,17 @@ export default function ASTFunctionNode({
               data.import_error ? "bg-red-500" : "bg-gray-700"
             } rounded-t-md justify-between`}
           >
-            <Handle type="target" position={Position.Left} id="top" />
+            <Handle type="target" position={Position.Left} id="000" />
             <Flex className="justify-between  flex-grow">
               <p className="px-2 font-semibold">
                 {data.node_title ?? data.name}
               </p>
             </Flex>
-            <Handle type="source" position={Position.Right} id="top" />
+            <Handle
+              type="source"
+              position={Position.Right}
+              id={TOP_HANDLE_ID}
+            />
           </Flex>
           <Flex className="flex justify-between py-2 h-full">
             <div className="flex flex-col gap-2 h-full w-full pr-2">

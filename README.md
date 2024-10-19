@@ -57,6 +57,13 @@ Go to the web server url
 
 ### Build and publish to pypi
 
+if you haven't installed twine:
+`python -m pip install --upgrade twine`
+if you haven't installed build:
+`python -m pip install --upgrade build`
+
+To build and publish to pypi:
+
 `chmod +x build.sh`
 
 `./build.sh`

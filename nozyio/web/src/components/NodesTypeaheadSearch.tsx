@@ -10,6 +10,7 @@ import { ASTNodeData, ShowSearchEvent } from "@/type/types";
 import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/react/shallow";
 import Spinner from "./ui/Spinner";
+import { TOP_HANDLE_ID } from "@/utils/consts";
 
 type FunctionSearchItem = {
   name: string;
@@ -73,8 +74,9 @@ export default function NodesTypeaheadSearch({
         source: showSearch.connectFrom.source ?? newNode.id,
         target: showSearch.connectFrom.target ?? newNode.id,
         sourceHandle:
-          showSearch.connectFrom.sourceHandle ?? output?.id ?? "top",
-        targetHandle: showSearch.connectFrom.targetHandle ?? input?.id ?? "top",
+          showSearch.connectFrom.sourceHandle ?? output?.id ?? TOP_HANDLE_ID,
+        targetHandle:
+          showSearch.connectFrom.targetHandle ?? input?.id ?? TOP_HANDLE_ID,
       };
       console.log("adding edge", edge);
       addEdge({
