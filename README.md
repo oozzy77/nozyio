@@ -31,7 +31,8 @@ To start the nozyio UI:
 
 **👇Automatically scan your python functions as nodes with params typing**
 
-<img width="830" alt="Screenshot 2024-10-12 at 11 09 18 PM" src="https://github.com/user-attachments/assets/abad2101-973b-4538-85d2-61d5e7cfb67b">
+<img width="600" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
+
 
 ## Future Plans
 
