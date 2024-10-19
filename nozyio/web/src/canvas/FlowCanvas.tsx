@@ -25,6 +25,7 @@ import undoRedoInstance from "@/utils/undoRedo";
 import { common_app, fetchApi } from "@/common_app/app";
 import { getLayoutElements } from "@/utils/flowLayoutUtils";
 import NodesTypeaheadSearch from "@/components/NodesTypeaheadSearch";
+import { useCopyAndPaste } from "@/hooks/useCopyAndPaste";
 
 const selector = (state: CanvasState) => ({
   nodes: state.nodes,
@@ -63,6 +64,7 @@ export function FlowCanvas() {
     setEdges,
     setShowSearch,
   } = useAppStore(useShallow(selector));
+  useCopyAndPaste();
 
   useEffect(() => {
     // restore graph from session cache
@@ -134,7 +136,6 @@ export function FlowCanvas() {
       x: event.clientX,
       y: event.clientY,
     });
-
     setSelectedNodeIDs([]);
     const now = Date.now();
     if (lastClickTime.current && now - lastClickTime.current < 300) {
