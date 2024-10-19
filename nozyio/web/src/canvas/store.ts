@@ -18,7 +18,6 @@ import { common_app } from "@/common_app/app";
 import undoRedoInstance from "@/utils/undoRedo";
 import { nanoid } from "nanoid";
 
-// this is our useStore hook that we can use in our components to get parts of the store and call actions
 const useAppStore = create<CanvasState>((set, get) => {
   const onGraphChange = () => {
     // any changes happen to the graph (nodes, edges, values, job_status) will trigger this
@@ -52,6 +51,7 @@ const useAppStore = create<CanvasState>((set, get) => {
     return start.toString();
   };
   return {
+    getNextNodeID,
     workflow_id: nanoid(),
     name: "Untitled", // workflow name
     nodes: [],
@@ -107,6 +107,10 @@ const useAppStore = create<CanvasState>((set, get) => {
       });
       onGraphChange();
     },
+    addEdge: (edge: Edge) => {
+      set({ edges: get().edges.concat(edge) });
+      onGraphChange();
+    },
     onConnect: (connection) => {
       undoRedoInstance.addUndoStack("onConnect");
       set({
@@ -135,6 +139,7 @@ const useAppStore = create<CanvasState>((set, get) => {
       });
       set({ values: newValues });
       onGraphChange();
+      return node as CanvasNode;
     },
     loadGraph: (graph: NozyGraph) => {
       console.log("load graph", graph);

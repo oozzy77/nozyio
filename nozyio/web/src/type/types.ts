@@ -29,6 +29,7 @@ export type ASTNodeInput = {
   id?: string;
   name?: string;
   widget?: NodeWidget;
+  hide_handle?: boolean;
   type?: ParamType;
   default?: any;
   optional?: boolean;
@@ -38,6 +39,7 @@ export type ASTNodeOutput = {
   id?: string;
   name?: string;
   type?: ParamType;
+  hide_handle?: boolean;
 };
 
 export type ASTNodeData = {
@@ -88,6 +90,13 @@ export type JobStatus = {
 export type ShowSearchEvent = {
   mouseX: number;
   mouseY: number;
+  connectFrom?: {
+    source?: string;
+    sourceHandle?: string;
+    target?: string;
+    targetHandle?: string;
+    handleType?: string;
+  };
 };
 
 export type CanvasState = {
@@ -109,10 +118,12 @@ export type CanvasState = {
   onConnect: OnConnect;
   setNodes: (nodes: CanvasNode[]) => void;
   setEdges: (edges: Edge[]) => void;
-  addNode: (node: Omit<CanvasNode, "id"> & { id?: string }) => void;
+  addNode: (node: Omit<CanvasNode, "id"> & { id?: string }) => CanvasNode;
   selectedNodeIDs: string[];
   setSelectedNodeIDs: (node: string[]) => void;
   loadGraph: (graph: NozyGraph) => void;
   setJobStatus: (status: JobStatus) => void;
   setJobID: (job_id: string) => void;
+  addEdge: (edge: Edge) => void;
+  getNextNodeID: () => string;
 };
