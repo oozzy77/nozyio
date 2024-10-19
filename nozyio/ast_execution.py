@@ -1,9 +1,10 @@
+import os
 import tempfile
 import traceback
 from nozyio.config_utils import config
 import sys
 from nozyio.code_to_graph import json_dict_to_code
-from nozyio.utils import is_serializable
+from nozyio.utils import get_temp_dir, is_serializable
 from nozyio.websocket_manager import websocket_manager
 from PIL import Image
 
@@ -129,7 +130,8 @@ def execute_graph(graph: dict, local_vars = {}):
 
                 # Check if res is a PIL Image
                 if isinstance(res, Image.Image):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                    temp_dir = get_temp_dir()
+                    with tempfile.NamedTemporaryFile(dir=temp_dir, delete=False, suffix='.png') as temp_file:
                         res.save(temp_file.name)
                         temp_path = temp_file.name
                     job_nodes[node['id']]['results'].append(temp_path)

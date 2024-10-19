@@ -312,7 +312,7 @@ def parse_python_file(file_path, module_name):
                             nozy_node_def = ast.literal_eval(node.value)
                             nozy_def_inputs = nozy_node_def.get('inputs', nozy_node_def.get('input', {}))
                             if isinstance(nozy_def_inputs, list):
-                                nozy_def_inputs = {f'{input_type['name']}': input_type for i, input_type in enumerate(nozy_def_inputs)}
+                                nozy_def_inputs = {f'{input_type["name"]}': input_type for i, input_type in enumerate(nozy_def_inputs)}
                             if function_name in functions:
                                 # is valid NOZY_NODE_DEF attribute assign
                                 functions[function_name]['node_title'] = nozy_node_def.get('node_title', None)
