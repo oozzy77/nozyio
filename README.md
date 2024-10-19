@@ -34,11 +34,12 @@ def resize_image(
     image: Image,
     width: int = 512,
     height: int = 512,
-    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"] = "stretch",
-    interpolation: str = "nearest"
+    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"],
+    interpolation: str
 ) -> Image:
     # ...some code here...
     return image.resize((width, height), interp_method)
+
 resize_image.NOZY_NODE_DEF = {
     "node_title": "Resize Image",
 }
@@ -68,7 +69,7 @@ Nozyio will automatically scan your python functions and convert them to nodes. 
 | Python Type             | UI Element         | HTML element            |
 | ----------------------- | ------------------ | ----------------------- |
 | `int`                   | number input box   | `<input type="number">` |
-| `str`                   | text text box      | `<input type="text">`   |
+| `str`                   | text input box      | `<textfield type="text">`   |
 | `Literal["abc", "xyz"]` | dropdown input box | `<select>`              |
 | `PIL.Image.Image`       | image preview      | `<img>`                 |
 
