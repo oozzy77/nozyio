@@ -31,7 +31,12 @@ To start the nozyio UI:
 
 **👇Automatically scan your python functions as nodes with params typing**
 
-<img width="600" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
+<img width="400" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
+
+**👇Double-click canvas to search any functions in current project and add nodes**
+
+<img width="400" alt="Screenshot 2024-10-19 at 10 42 41 PM" src="https://github.com/user-attachments/assets/f18b4569-ee60-4385-ad95-3fe72a9e5f43">
+
 
 ### Define a node
 
