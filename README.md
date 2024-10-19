@@ -12,7 +12,6 @@ graph flow UI ↔️ python code
 
 <img width="900" alt="Screenshot 2024-10-19 at 2 38 49 PM" src="https://github.com/user-attachments/assets/d6c5f930-cedc-426a-aaa8-11cdb92c6cd4">
 
-
 ## Install
 
 In your python project root:
@@ -29,11 +28,9 @@ To start the nozyio UI:
 
 <img width="900" alt="Screenshot 2024-10-19 at 3 57 23 PM 1" src="https://github.com/user-attachments/assets/64a69234-5532-43a4-b192-415317be6fcd">
 
-
 **👇Automatically scan your python functions as nodes with params typing**
 
 <img width="600" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
-
 
 ## Future Plans
 
@@ -68,8 +65,6 @@ To build and publish to pypi:
 `chmod +x build.sh`
 
 `./build.sh`
-
-`twine upload dist/*`
 
 ## Credits
 
