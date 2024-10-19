@@ -48,7 +48,7 @@ resize_image.NOZY_NODE_DEF = {
  
 <img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
 
-**👇Export workflow to code**
+**👇Export workflow to code, preview any image input/output**
 
 <img width="1728" alt="378069723-64a69234-5532-43a4-b192-415317be6fcd-min" src="https://github.com/user-attachments/assets/b93e8de8-35aa-4144-a41d-10ede476a74d">
 
