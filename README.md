@@ -10,7 +10,7 @@ graph flow UI ↔️ python code
 - Export the pipeline graph as Python code
 - Python visual scripting
 
-<img width="1723" alt="Screenshot 2024-10-19 at 2 38 49 PM" src="https://github.com/user-attachments/assets/d6c5f930-cedc-426a-aaa8-11cdb92c6cd4">
+<img width="800" alt="Screenshot 2024-10-19 at 2 38 49 PM" src="https://github.com/user-attachments/assets/d6c5f930-cedc-426a-aaa8-11cdb92c6cd4">
 
 
 ## Install
@@ -27,7 +27,8 @@ To start the nozyio UI:
 
 **👇Export workflow to code**
 
-<img width="900" alt="Screenshot 2024-10-12 at 11 06 03 PM" src="https://github.com/user-attachments/assets/7bb3a2d7-1687-4099-9e13-a61294cac046">
+<img width="900" alt="Screenshot 2024-10-19 at 3 57 23 PM 1" src="https://github.com/user-attachments/assets/64a69234-5532-43a4-b192-415317be6fcd">
+
 
 **👇Automatically scan your python functions as nodes with params typing**
 
