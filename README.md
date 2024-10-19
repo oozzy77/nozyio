@@ -32,6 +32,69 @@ To start the nozyio UI:
 
 <img width="600" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
 
+### Define a node
+
+Nozyio will automatically scan your python functions and convert them to nodes. You can define the input, output types by adding **type annotations** to the function parameters and return type. Params with no type annotation will become "any" type.
+
+| Python Type             | UI Element         | HTML element            |
+| ----------------------- | ------------------ | ----------------------- |
+| `int`                   | number input box   | `<input type="number">` |
+| `str`                   | text text box      | `<input type="text">`   |
+| `Literal["abc", "xyz"]` | dropdown input box | `<select>`              |
+| `PIL.Image.Image`       | image preview      | `<img>`                 |
+
+In below example, the args default values will be provided as the input box default value.
+
+```python
+from PIL.Image import Image
+
+def resize_image(
+    image: Image,
+    width: int = 512,
+    height: int = 512,
+    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"] = "stretch",
+    interpolation: str = "nearest"
+) -> Image:
+    # ...some code here...
+    return image.resize((width, height), interp_method)
+resize_image.NOZY_NODE_DEF = {
+    "node_title": "Resize Image",
+    "description": "Resize image to provided width and height",
+}
+```
+
+You can also add custom **UI widgets** to the input parameters by adding a `widget` field to the input definition. In below example, we use `server_file_picker` widget to let user select an image file from the files on the server:
+
+```python
+from PIL import Image.Image
+def load_image(image_path: str) -> Image.Image:
+    if image_path.startswith('http://') or image_path.startswith('https://'):
+        response = requests.get(image_path)
+        response.raise_for_status()  # Raises an error for bad responses
+        image_data = BytesIO(response.content)
+        return Image.open(image_data)
+    else:
+        return Image.open(image_path)
+load_image.NOZY_NODE_DEF = {
+    "node_title": "Load Image",
+    "description": "Load image from path",
+    "inputs": {
+        "image_path": {
+            "type": "filepath",
+            "widget": {
+                'type': 'server_file_picker',
+                'options': {
+                    'extensions': ['.png', '.jpg', '.jpeg', '.bmp', '.tiff', '.webp']
+                }
+            },
+            "hide_handle": True,
+            "description": "Path to image"
+        }
+    },
+    "outputs": [{"name": "image", "type": "Image", "description": "Loaded image"}]
+}
+```
+
 ## Future Plans
 
 - [ ] Visualize your python code to graph flow
