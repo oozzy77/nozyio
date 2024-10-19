@@ -2,6 +2,8 @@
 
 **Python AI/ML pipeline visualization and orchestration UI for your codebase**
 
+demo: https://www.youtube.com/watch?v=8rvxua4AmAo
+
 graph flow UI ↔️ python code
 
 - Workflow nodes editor for your python code
