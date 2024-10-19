@@ -44,7 +44,7 @@ resize_image.NOZY_NODE_DEF = {
 }
 
 ```
-👇This function will be rendered as below. You can see that all args default values are also the default value for the input box UI
+👇This function will be rendered as below. You can see that all args default values are populated as the input box defaults
  
 <img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
 
@@ -56,7 +56,7 @@ resize_image.NOZY_NODE_DEF = {
 
 <img width="400" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
 
-**👇Double-click canvas to search any functions in current project and add nodes**
+**👇Double-click canvas to search any functions in your project and add nodes**
 
 <img width="400" alt="Screenshot 2024-10-19 at 10 42 41 PM" src="https://github.com/user-attachments/assets/f18b4569-ee60-4385-ad95-3fe72a9e5f43">
 
