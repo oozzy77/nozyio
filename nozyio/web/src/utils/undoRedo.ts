@@ -1,11 +1,7 @@
-import { Edge, NodeChange } from "@xyflow/react";
-import { CanvasNode } from "@/type/types";
+import { CanvasNode, CanvasState } from "@/type/types";
 import useAppStore from "@/canvas/store";
 
-interface StackType {
-  nodes: CanvasNode[];
-  edges: Edge[];
-}
+type StackType = Pick<CanvasState, "nodes" | "edges" | "values">;
 
 class UndoRedo {
   public undoStack: StackType[] = [];
@@ -42,16 +38,18 @@ class UndoRedo {
     if (this.undoStack.length) {
       const preState = this.undoStack.pop();
       if (preState) {
-        const { nodes, edges } = useAppStore.getState();
-        this.redoStack.push({ nodes, edges });
+        const { nodes, edges, values } = useAppStore.getState();
+        this.redoStack.push({ nodes, edges, values });
         useAppStore.setState({
           nodes: preState.nodes,
           edges: preState.edges,
+          values: preState.values,
         });
       } else {
         useAppStore.setState({
           nodes: [],
           edges: [],
+          values: [],
         });
       }
     }
@@ -60,29 +58,30 @@ class UndoRedo {
   public redo = () => {
     const nextState = this.redoStack.pop();
     if (nextState) {
-      const { nodes, edges } = useAppStore.getState();
-      this.undoStack.push({ nodes, edges });
+      const { nodes, edges, values } = useAppStore.getState();
+      this.undoStack.push({ nodes, edges, values });
       useAppStore.setState({
         nodes: nextState.nodes,
         edges: nextState.edges,
+        values: nextState.values,
       });
     }
   };
 
   public addUndoStack = (
     type: string,
-    nodeChanges?: NodeChange<CanvasNode>[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    changes?: any
   ) => {
-    const { nodes, edges } = useAppStore.getState();
-
+    const { nodes, edges, values } = useAppStore.getState();
+    const change = changes?.[0];
     switch (type) {
       case "init":
         this.undoStack = [];
         break;
       case "onNodesChange":
-        if (nodeChanges) {
+        if (changes) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const change = nodeChanges[0] as any;
           const ignoreAddUndoStack = [
             "dimensions",
             "position",
@@ -108,6 +107,7 @@ class UndoRedo {
               this.undoStack.push({
                 nodes: this.nodeMoveOrResizeStorage,
                 edges,
+                values,
               });
               this.nodeMoveOrResizeStorage = [];
             }
@@ -118,11 +118,17 @@ class UndoRedo {
           }
         }
         break;
+      case "onEdgesChange":
+        if (change.type === "select") {
+          return;
+        }
+        break;
     }
 
     this.undoStack.push({
       nodes,
       edges,
+      values,
     });
 
     if (this.undoStack.length > 30) {

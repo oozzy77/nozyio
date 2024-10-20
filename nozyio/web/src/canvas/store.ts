@@ -1,10 +1,5 @@
 import { create } from "zustand";
-import {
-  addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
-  Edge,
-} from "@xyflow/react";
+import { addEdge, applyNodeChanges, applyEdgeChanges } from "@xyflow/react";
 
 import {
   CanvasNode,
@@ -101,7 +96,7 @@ const useAppStore = create<CanvasState>((set, get) => {
       onGraphChange();
     },
     onEdgesChange: (changes) => {
-      undoRedoInstance.addUndoStack("onEdgesChange");
+      undoRedoInstance.addUndoStack("onEdgesChange", changes);
       set({
         edges: applyEdgeChanges(changes, get().edges),
       });
