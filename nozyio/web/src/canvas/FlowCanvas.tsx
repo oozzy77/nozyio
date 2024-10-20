@@ -10,7 +10,11 @@ import {
   OnConnectEnd,
 } from "@xyflow/react";
 import { useTheme } from "@/components/ui/theme-provider";
-import { IconArrowBackUp, IconArrowForwardUp } from "@tabler/icons-react";
+import {
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconArrowsSplit2,
+} from "@tabler/icons-react";
 import { useDnD } from "./DnDContext";
 import { ASTNodeData, CanvasNode, CanvasState } from "@/type/types";
 import ASTFunctionNode from "./nodes/ASTFunctionNode";
@@ -19,7 +23,9 @@ import { useShallow } from "zustand/react/shallow";
 import { GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import undoRedoInstance from "@/utils/undoRedo";
 import { common_app, fetchApi } from "@/common_app/app";
+import { getLayoutElements } from "@/utils/flowLayoutUtils";
 import NodesTypeaheadSearch from "@/components/NodesTypeaheadSearch";
+import { useCopyAndPaste } from "@/hooks/useCopyAndPaste";
 
 const selector = (state: CanvasState) => ({
   nodes: state.nodes,
@@ -31,6 +37,8 @@ const selector = (state: CanvasState) => ({
   addNode: state.addNode,
   loadGraph: state.loadGraph,
   setSelectedNodeIDs: state.setSelectedNodeIDs,
+  setNodes: state.setNodes,
+  setEdges: state.setEdges,
   setShowSearch: state.setShowSearch,
 });
 
@@ -52,8 +60,11 @@ export function FlowCanvas() {
     loadGraph,
     setSelectedNodeIDs,
     setJobStatus,
+    setNodes,
+    setEdges,
     setShowSearch,
   } = useAppStore(useShallow(selector));
+  useCopyAndPaste();
 
   useEffect(() => {
     // restore graph from session cache
@@ -126,7 +137,6 @@ export function FlowCanvas() {
       x: event.clientX,
       y: event.clientY,
     });
-
     setSelectedNodeIDs([]);
     const now = Date.now();
     if (lastClickTime.current && now - lastClickTime.current < 300) {
@@ -173,6 +183,17 @@ export function FlowCanvas() {
     });
   }, []);
 
+  const onLayout = (direction: string) => {
+    const { nodes: layoutNodes, edges: layoutEdges } = getLayoutElements(
+      nodes,
+      edges,
+      direction
+    );
+
+    setNodes([...layoutNodes]);
+    setEdges([...layoutEdges]);
+  };
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -214,6 +235,18 @@ export function FlowCanvas() {
           <IconArrowForwardUp
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4"
+          />
+        </ControlButton>
+        <ControlButton onClick={() => onLayout("LR")}>
+          <IconArrowsSplit2
+            size={16}
+            className="!fill-[none] !max-w-4 !max-h-4"
+          />
+        </ControlButton>
+        <ControlButton onClick={() => onLayout("TB")}>
+          <IconArrowsSplit2
+            size={16}
+            className="!fill-[none] !max-w-4 !max-h-4 rotate-90"
           />
         </ControlButton>
       </Controls>
