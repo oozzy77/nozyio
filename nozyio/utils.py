@@ -1,4 +1,6 @@
 import math
+import os
+import tempfile
 
 
 def is_serializable(value):
@@ -15,4 +17,8 @@ def is_serializable(value):
         return all(isinstance(key, str) and is_serializable(val) for key, val in value.items())
     return False
     
-    
+def get_temp_dir():
+    # Create a subdirectory in the temp directory
+    temp_dir = os.path.join(tempfile.gettempdir(), 'nozyio')
+    os.makedirs(temp_dir, exist_ok=True)
+    return temp_dir

@@ -11,3 +11,5 @@ rm -rf dist/*
 
 # Run the build command
 python3 -m build
+
+twine upload dist/*

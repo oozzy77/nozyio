@@ -171,15 +171,20 @@ def list_functions_classes(py_file_path):
 
     details = []
     for name, obj in inspect.getmembers(module):
-        if inspect.isfunction(obj) and obj.__module__ == module.__name__:
-            # Handle functions
-            print(f'😁 find function {name}')
-            func_info = extract_function_details(obj, module.__name__)
-            details.append(func_info)
-        # elif inspect.isclass(obj) and obj.__module__ == module.__name__:
-        #     # Handle classes
-        #     class_info = extract_class_details(obj, module.__name__)
-        #     details.append(class_info)
+        try: 
+            if inspect.isfunction(obj) and obj.__module__ == module.__name__:
+                # Handle functions
+                print(f'😁 find function {name}')
+                func_info = extract_function_details(obj, module.__name__)
+                details.append(func_info)
+            # elif inspect.isclass(obj) and obj.__module__ == module.__name__:
+            #     # Handle classes
+            #     class_info = extract_class_details(obj, module.__name__)
+            #     details.append(class_info)
+        except Exception as e:
+            print(f'❌ error scanning {name}: {e}')
+            print(traceback.format_exc())
+            continue
     
     return details
 

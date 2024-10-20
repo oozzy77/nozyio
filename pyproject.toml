@@ -4,8 +4,9 @@
 
     [project]
     name = "nozyio"
-    version = "0.1.3"
+    version = "0.1.7"
     description = "Node based workflow orchestration UI for python ML/AI computing"
+    readme = "README.md"
     authors = [
         { name = "oozzy", email = "nozyio.hello@gmail.com" }
     ]
@@ -13,6 +14,7 @@
         "aiohttp",
         "astpretty",
         "requests",
+        "pillow",
     ]
     [tool.setuptools]
     packages = ["nozyio"]

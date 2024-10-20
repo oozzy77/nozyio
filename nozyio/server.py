@@ -1,6 +1,7 @@
 import asyncio
 import json
 import sys
+import tempfile
 from aiohttp import web
 import os
 from .code_to_graph import code_to_graph
@@ -170,7 +171,8 @@ def start_server():
     if allow_cors:
         print('🧪allow cors=', allow_cors)
     app = web.Application(middlewares=[cors_middleware] if allow_cors else [])
-    
+    temp_dir = tempfile.gettempdir()
+    print("System's temporary directory:", temp_dir)
     # Register routes using the endpoint decorator
     for name, func in globals().items():
         if callable(func) and hasattr(func, 'route_info'):

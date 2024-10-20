@@ -10,6 +10,7 @@ import { ASTNodeData, ShowSearchEvent } from "@/type/types";
 import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/react/shallow";
 import Spinner from "./ui/Spinner";
+import { TOP_HANDLE_ID } from "@/utils/consts";
 
 type FunctionSearchItem = {
   name: string;
@@ -21,10 +22,11 @@ export default function NodesTypeaheadSearch({
 }: {
   showSearch: ShowSearchEvent;
 }) {
-  const { addNode, setShowSearch } = useAppStore(
+  const { addNode, setShowSearch, addEdge } = useAppStore(
     useShallow((state) => ({
       addNode: state.addNode,
       setShowSearch: state.setShowSearch,
+      addEdge: state.addEdge,
     }))
   );
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +46,53 @@ export default function NodesTypeaheadSearch({
       })
       .finally(() => setLoading(false));
   }, [debouncedSearchTerm]);
+  const onClickSearchResult = (item: FunctionSearchItem | ASTNodeData) => {
+    const newNode = addNode({
+      data: item as ASTNodeData,
+      position: {
+        x: showSearch.mouseX,
+        y: showSearch.mouseY,
+      },
+      type: "astFunction",
+    });
+    // find possible handle to connect to (same io type, not hidden)
+    const input =
+      newNode.data.input?.filter(
+        (input) =>
+          input.type === showSearch.connectFrom?.handleType &&
+          !input.hide_handle
+      )?.[0] ?? newNode.data.input?.filter((input) => !input.hide_handle)?.[0];
+    const output =
+      newNode.data.output?.filter(
+        (output) =>
+          output.type === showSearch.connectFrom?.handleType &&
+          !output.hide_handle
+      )?.[0] ??
+      newNode.data.output?.filter((output) => !output.hide_handle)?.[0];
+    if (showSearch.connectFrom) {
+      const edge = {
+        source: showSearch.connectFrom.source ?? newNode.id,
+        target: showSearch.connectFrom.target ?? newNode.id,
+        sourceHandle:
+          showSearch.connectFrom.sourceHandle ?? output?.id ?? TOP_HANDLE_ID,
+        targetHandle:
+          showSearch.connectFrom.targetHandle ?? input?.id ?? TOP_HANDLE_ID,
+      };
+      console.log("adding edge", edge);
+      addEdge({
+        id:
+          edge.source +
+          "_" +
+          edge.target +
+          "_" +
+          edge.sourceHandle +
+          "_" +
+          edge.targetHandle,
+        ...edge,
+      });
+    }
+    setShowSearch(null);
+  };
 
   return (
     <Card
@@ -72,18 +121,7 @@ export default function NodesTypeaheadSearch({
                 <Flex
                   key={`${item.type}-${item.name}-${index}`}
                   className="justify-between flex-wrap hover:bg-muted py-2 cursor-pointer"
-                  onClick={() => {
-                    console.log("selected add node", showSearch);
-                    addNode({
-                      data: item as ASTNodeData,
-                      position: {
-                        x: showSearch.mouseX,
-                        y: showSearch.mouseY,
-                      },
-                      type: "astFunction",
-                    });
-                    setShowSearch(null);
-                  }}
+                  onClick={() => onClickSearchResult(item)}
                 >
                   <p>{item.name}</p>
                   <Flex className="gap-2">

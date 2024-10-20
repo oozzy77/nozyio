@@ -25,39 +25,56 @@ export default function ASTFunctionNodeInput({
 }) {
   const isNumber = input.type === "int" || input.type === "float";
   const widget = input.widget;
-  if (widget?.type === "server_file_picker") {
+
+  return (
+    <Stack
+      className={`flex w-full ${isNumber ? "h-10" : ""}`}
+      key={"input" + input.id}
+    >
+      <Flex className="gap-2 w-full">
+        {!input.hide_handle && (
+          <div className="relative flex items-center gap-1">
+            <CustomHandle
+              type="target"
+              position={Position.Left}
+              id={input.id}
+            />
+            <span className="text-sm font-semibold ml-2">{input.name}</span>
+            {typeof input.type === "string" && (
+              <span className="text-[10px] text-zinc-500 italic">
+                {input.type.split("[")[0]}
+              </span>
+            )}
+          </div>
+        )}
+        {widget ? (
+          <InputWidget input={input} nodeID={nodeID} />
+        ) : (
+          !isConnected && (
+            <ASTFunctionNodeInputBox input={input} nodeID={nodeID} />
+          )
+        )}
+      </Flex>
+    </Stack>
+  );
+}
+
+function InputWidget({
+  input,
+  nodeID,
+}: {
+  input: ASTNodeInput;
+  nodeID: string;
+}) {
+  if (input.widget?.type === "server_file_picker") {
     return (
       <ServerFilePicker
         input={input}
-        extensions={widget.options?.extensions}
+        extensions={input.widget.options?.extensions}
         nodeID={nodeID}
       />
     );
   }
-  return (
-    <Stack
-      className={`flex relative w-full ${isNumber ? "h-10" : ""}`}
-      key={"input" + input.id}
-    >
-      <CustomHandle type="target" position={Position.Left} id={input.id} />
-      <Flex className="gap-2 ml-2 w-full">
-        <div className="flex items-center gap-1">
-          <span className="text-sm font-semibold">{input.name}</span>
-          {typeof input.type === "string" && (
-            <span className="text-[10px] text-zinc-500 italic">
-              {input.type.split("[")[0]}
-            </span>
-          )}
-        </div>
-        {!isConnected && (
-          <ASTFunctionNodeInputBox input={input} nodeID={nodeID} />
-        )}
-      </Flex>
-      {/* {!isConnected && (
-        <ASTFunctionNodeInputBox input={input} nodeID={nodeID} />
-      )} */}
-    </Stack>
-  );
 }
 
 function ASTFunctionNodeInputBox({

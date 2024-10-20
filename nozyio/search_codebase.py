@@ -70,7 +70,7 @@ def search_codebase(search_term):
     ]
 
     result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    MAX_RESULTS = 10
+    MAX_RESULTS = 20
     if result.returncode == 0:
         matches = result.stdout.splitlines()
         # Filter the matches based on the search term

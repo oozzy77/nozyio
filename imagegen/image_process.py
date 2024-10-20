@@ -28,6 +28,7 @@ load_image.NOZY_NODE_DEF = {
                     'extensions': ['.png', '.jpg', '.jpeg', '.bmp', '.tiff', '.webp']
                 }
             },
+            "hide_handle": True,
             "description": "Path to image"
         }
     },

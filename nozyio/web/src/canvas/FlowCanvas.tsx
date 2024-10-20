@@ -16,7 +16,7 @@ import {
   IconArrowsSplit2,
 } from "@tabler/icons-react";
 import { useDnD } from "./DnDContext";
-import { CanvasNode, CanvasState } from "@/type/types";
+import { ASTNodeData, CanvasNode, CanvasState } from "@/type/types";
 import ASTFunctionNode from "./nodes/ASTFunctionNode";
 import useAppStore from "./store";
 import { useShallow } from "zustand/react/shallow";
@@ -107,6 +107,7 @@ export function FlowCanvas() {
     event.dataTransfer.dropEffect = "move";
   }, []);
   const lastClickTime = useRef(0);
+  const lastOnConnectEnd = useRef(0);
 
   const onDrop = useCallback(
     (event: React.DragEvent) => {
@@ -143,13 +144,43 @@ export function FlowCanvas() {
         mouseX: position.x,
         mouseY: position.y,
       });
-    } else {
+    } else if (now - lastOnConnectEnd.current > 300) {
       setShowSearch(null);
     }
     lastClickTime.current = now;
   }, []);
-  const onConnectEnd: OnConnectEnd = useCallback((event, params) => {
-    // setShowSearch(null);
+  const onConnectEnd: OnConnectEnd = useCallback((_event, params) => {
+    lastOnConnectEnd.current = Date.now();
+    if (params.isValid) {
+      return;
+    }
+    if (!params.to?.x || !params.to?.x) {
+      throw new Error("onConnectEnd No position found!");
+    }
+    const position = screenToFlowPosition({
+      x: params.to?.x,
+      y: params.to?.y,
+    });
+    const fromNode = params.fromNode?.data as ASTNodeData;
+    const toNode = params.toNode?.data as ASTNodeData;
+    const fromHandleType = fromNode?.output?.find(
+      (output) => output.id === params.fromHandle?.id
+    )?.type;
+    const toHandleType = toNode?.input?.find(
+      (input) => input.id === params.toHandle?.id
+    )?.type;
+    console.log("onconnectend", params);
+    setShowSearch({
+      mouseX: position.x,
+      mouseY: position.y,
+      connectFrom: {
+        source: params.fromNode?.id,
+        sourceHandle: params.fromHandle?.id ?? undefined,
+        target: params.toNode?.id,
+        targetHandle: params.toHandle?.id ?? undefined,
+        handleType: fromHandleType ?? toHandleType,
+      },
+    });
   }, []);
 
   const onLayout = (direction: string) => {
@@ -169,7 +200,6 @@ export function FlowCanvas() {
       nodeTypes={nodeTypes}
       edges={edges}
       colorMode={theme}
-      //   edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onDrop={onDrop}
@@ -179,7 +209,12 @@ export function FlowCanvas() {
       fitViewOptions={{
         padding: 0.2,
       }}
-      defaultEdgeOptions={{}}
+      defaultEdgeOptions={{
+        style: {
+          strokeWidth: 2,
+          stroke: "#9049CF",
+        },
+      }}
       onNodeClick={(_event, node) => {
         console.log("node click #" + node.id);
         setSelectedNodeIDs([node.id]);

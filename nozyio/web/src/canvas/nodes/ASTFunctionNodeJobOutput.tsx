@@ -41,16 +41,16 @@ export default function ASTFunctionNodeJobOutput({
                 {JSON.stringify(value, null, 2)}
               </pre>
             ) : (
-              <pre className="whitespace-pre-wrap">{value}</pre>
+              <pre className="whitespace-pre-wrap break-all">{value}</pre>
             )}
             {typeof value === "string" && isValidImagePathRegex(value) && (
-              <Stack className="gap-1">
+              <Stack className="gap-1 justify-center items-center">
                 <img
                   src={
                     apiBase + `/preview_image?path=${encodeURIComponent(value)}`
                   }
                   alt={"image"}
-                  className="object-contain cursor-pointer max-w-[800px]"
+                  className="object-contain cursor-pointer w-full max-w-[500px] max-h-[500px]"
                   style={{
                     flex: 1,
                     objectFit: "contain",
@@ -65,6 +65,7 @@ export default function ASTFunctionNodeJobOutput({
                 />
                 <Button
                   // variant={"secondary"}
+                  className="w-full"
                   onClick={() => {
                     window.open(
                       apiBase +
