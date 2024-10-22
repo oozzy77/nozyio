@@ -8,7 +8,10 @@ def text_to_image(prompt:str = "An astrounaut riding a horse"):
     ).to(device_management.device)
     generator = torch.Generator(device_management.device).manual_seed(31)
     return pipeline(prompt, generator=generator).images[0]
-
+text_to_image.NOZY_NODE_DEF = {
+    "node_title": "Text to Image gen",
+    "description": "Generate an image from a text prompt",
+}
 
 # import torch
 # from transformers import pipeline

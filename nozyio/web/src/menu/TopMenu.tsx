@@ -1,16 +1,12 @@
 import { Button } from "@/components/ui/button";
-import type { CanvasState, NozyGraph } from "@/type/types";
-import { common_app, fetchApi } from "@/common_app/app";
-import {
-  IconDownload,
-  IconFolderOpen,
-  IconPlayerPlayFilled,
-} from "@tabler/icons-react";
+import type { CanvasState } from "@/type/types";
+import { common_app } from "@/common_app/app";
+import { IconDownload, IconFolderOpen } from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
 import { lazy, useRef } from "react";
 import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
-import { customAlphabet } from "nanoid";
+import TopMenuRunButton from "./TopMenuRunButton";
 const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
 const TopMenuCodePreviewButton = lazy(
   () => import("./TopMenuCodePreviewButton")
@@ -49,10 +45,6 @@ export default function TopMenu() {
       loadGraph(json);
     };
   };
-  const nanoidCustom = customAlphabet(
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-    12
-  );
 
   return (
     <div className="flex items-center justify-between absolute top-0 left-0 right-0">
@@ -100,24 +92,7 @@ export default function TopMenu() {
       </div>
       <div className="flex items-center gap-2">
         <TopMenuCodePreviewButton />
-        <Button
-          left={<IconPlayerPlayFilled size={15} />}
-          onClick={() => {
-            const graph: NozyGraph = {
-              job_id: nanoidCustom(),
-              nodes: common_app.graph.nodes,
-              edges: common_app.graph.edges,
-              values: common_app.graph.values,
-            };
-            console.log("graph", graph);
-            fetchApi("/queue_job", {
-              method: "POST",
-              body: JSON.stringify(graph),
-            });
-          }}
-        >
-          Run
-        </Button>
+        <TopMenuRunButton />
       </div>
     </div>
   );

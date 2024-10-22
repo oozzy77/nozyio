@@ -50,7 +50,8 @@ async def handle_queue_job(request):
 @endpoint('/run_job', method='POST')
 async def handle_run_job(request):
     body = await request.json()
-    await run_in_executor(execute_graph, body)
+    # await run_in_executor(execute_graph, body)
+    await asyncio.to_thread(execute_graph, body)
     return web.json_response({'status': 'ok'})
 
 @endpoint('/list_package_children')
@@ -126,7 +127,7 @@ async def websocket_handler(request):
 @endpoint('/search_functions')
 async def handle_search_functions(request):
     query = request.rel_url.query['query']
-    results = search_codebase(query)
+    results = await asyncio.to_thread(search_codebase, query)
     return web.json_response(results)
 
 @endpoint('/refresh_node_def', method='POST')
