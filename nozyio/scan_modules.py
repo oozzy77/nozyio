@@ -6,9 +6,9 @@ import fnmatch
 import time
 import json
 import traceback
-from nozyio.config_utils import config, get_root_dir
-from nozyio.scan_modules_ast import parse_python_file
-from nozyio.utils import is_serializable
+from .config_utils import config, get_root_dir
+from .scan_modules_ast import get_function_details_by_ast, parse_python_file
+from .utils import is_serializable
 
 def matches_blacklist(filepath, blacklist):
     """Check if the file path matches any pattern in the blacklist."""
@@ -165,8 +165,13 @@ def list_functions_classes(py_file_path):
     # Get the module name by replacing path separators with dots and removing the file extension
     module_name = package_rel_path.replace(os.sep, '.').rsplit('.', 1)[0]
     print('👾 module_name', module_name)
-    # load and execute the module to inspect its contents
-    # details = parse_python_file(py_file_path, module_name)
+    # use ast to parse the module without actual importing
+    details = parse_python_file(py_file_path, module_name)
+    #  use importlib to parse the module
+    # details = parse_module_by_import(module_name)
+    return details
+
+def parse_module_by_import(module_name):
     module = importlib.import_module(module_name)
 
     details = []
@@ -185,8 +190,12 @@ def list_functions_classes(py_file_path):
             print(f'❌ error scanning {name}: {e}')
             print(traceback.format_exc())
             continue
-    
     return details
+
+def get_function_details_by_import(module_name, function_name):
+    module = importlib.import_module(module_name)
+    obj = getattr(module, function_name)
+    return extract_function_details(obj, module_name)
 
 def refresh_node_def(graph: dict):
     nodes = graph.get('nodes')
@@ -195,10 +204,7 @@ def refresh_node_def(graph: dict):
             module_name = node.get('data', {}).get('module')
             name = node.get('data', {}).get('name')
             if module_name and name:
-                # print(f'🔥 refresh node def for {module_name} {name}')
-                module = importlib.import_module(module_name)
-                obj = getattr(module, name)
-                node_def = extract_function_details(obj, module_name)
+                node_def = get_function_details_by_ast(module_name, name)
                 if isinstance(node_def, dict):
                     node['data'] = node_def
         except Exception as e:

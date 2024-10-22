@@ -66,7 +66,6 @@ async def handle_scan_directories(request):
 async def handle_preview_image(request):
     path = request.rel_url.query['path']
     download = request.rel_url.query.get('download', False)
-    print('preview_image', path)
     abs_path = os.path.join(get_root_dir(), path)
 
     if not os.path.exists(abs_path) or not os.path.isfile(abs_path):
@@ -111,16 +110,14 @@ async def websocket_handler(request):
     print('WebSocket connection established')
     await websocket_manager.set_connection(ws)
 
-    try:
-        async for msg in ws:
-            if msg.type == web.WSMsgType.TEXT:
-                # Handle incoming messages if needed
-                print(f"Received message: {msg.data}")
-                await websocket_manager.send_message(f"Echo: {msg.data}")
-            elif msg.type == web.WSMsgType.ERROR:
-                print(f"WebSocket connection closed with exception {ws.exception()}")
-    finally:
-        ws.close() 
+
+    async for msg in ws:
+        if msg.type == web.WSMsgType.TEXT:
+            # Handle incoming messages if needed
+            print(f"Received message: {msg.data}")
+            await websocket_manager.send_message(f"Echo: {msg.data}")
+        elif msg.type == web.WSMsgType.ERROR:
+            print(f"WebSocket connection closed with exception {ws.exception()}")
 
     return ws
 

@@ -120,7 +120,7 @@ def execute_graph(graph: dict, local_vars = {}):
         for node in order:
             job_nodes[node['id']] = {'status': 'RUNNING', 'results': []}
             send_job_status(graph['job_status'])
-            execute_node(node, handle_connection_map, local_vars, graph.get('values', {}))
+            execute_node_ast(node, handle_connection_map, local_vars, graph.get('values', {}))
             # after execution, get the outputs
             outputs = node.get('data', {}).get('output', [])
             node_outputs = []
@@ -178,6 +178,7 @@ def transform_ast_nodes(node, handle_connection_map, values) -> list:
         traverse_ast_tree_and_replace(ast_node, handle_connection_map, node['id'], values)
     return ast_nodes
 
+# compile to AST to code string literal to execute node
 def execute_node_ast(node, handle_connection_map, local_vars, values):
     ast_nodes = transform_ast_nodes(node, handle_connection_map, values)
 
@@ -186,11 +187,12 @@ def execute_node_ast(node, handle_connection_map, local_vars, values):
         "body": ast_nodes,
         "type_ignores": []
     })
-    print('⏩Executing⏩', code)
+    print('⏩Executing⏩ \n', code)
     exec(code,  globals(), local_vars)
         
     return local_vars
 
+# native way to call function, no compile to AST exec()
 def execute_node(node, handle_connection_map, local_vars, values):
     module = node.get('data', {}).get('module')
     name = node.get('data', {}).get('name')

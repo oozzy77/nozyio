@@ -42,7 +42,7 @@ export default function ASTFunctionNodeInput({
             <span className="text-sm font-semibold ml-2">{input.name}</span>
             {typeof input.type === "string" && (
               <span className="text-[10px] text-zinc-500 italic">
-                {input.type.split("[")[0]}
+                {input.type}
               </span>
             )}
           </div>

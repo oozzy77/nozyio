@@ -1,5 +1,7 @@
 import ast
+import importlib
 import json
+import os
 def is_serializable(value):
     try:
         json.dumps(value)
@@ -107,7 +109,6 @@ def process_annotation(annotation, import_aliases):
     return None
 
 def extract_function_info_from_ast(function_node, module_name, nozy_node_def = {}, import_aliases = {}):
-    print('🔍nozy def passed in:', nozy_node_def)
     # Get the function name
     function_name = function_node.name
 
@@ -329,7 +330,7 @@ def build_import_aliases(tree):
                 import_aliases[alias.asname or alias.name] = alias.name
     return import_aliases
 
-def parse_python_file(file_path, module_name):
+def parse_python_file_dict(file_path, module_name) -> dict[str, dict]:
     """Parse a Python file and extract function information."""
     with open(file_path, "r") as file:
         source_code = file.read()
@@ -357,7 +358,24 @@ def parse_python_file(file_path, module_name):
             func_info = extract_function_info_from_ast(node, module_name, nozy_node_defs.get(node.name, {}), import_aliases)
             functions[node.name] = func_info
 
-    return list(functions.values())
+    return functions
+
+def parse_python_file(file_path, module_name) -> list[dict]:
+    details_dict = parse_python_file_dict(file_path, module_name)
+    return list(details_dict.values())
+
+def get_function_details_by_ast(module_name, function_name):
+    # Find the module specification
+    spec = importlib.util.find_spec(module_name)
+    if spec is None:
+        raise ImportError(f"Module {module_name} not found")
+    module_path = spec.origin
+    if module_path is None:
+        raise ImportError(f"Module {module_name} does not have a file path")
+    
+    file_path = os.path.abspath(module_path)
+    funcitons = parse_python_file_dict(file_path, module_name)
+    return funcitons.get(function_name, None)
 
 if __name__ == "__main__":
     # Example usage

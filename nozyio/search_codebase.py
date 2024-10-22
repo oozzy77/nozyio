@@ -6,6 +6,7 @@ import platform
 import stat
 import subprocess
 import re
+from .scan_modules_ast import get_function_details_by_ast
 from .scan_modules import extract_function_details
 
 import pkg_resources
@@ -83,14 +84,15 @@ def search_codebase(search_term):
             try:
                 relative_path = os.path.relpath(result['file_path'])
                 module_name = os.path.splitext(relative_path)[0].replace(os.path.sep, '.')
-                module = importlib.import_module(module_name)
-                if hasattr(module, result['name']):
-                    function_obj = getattr(module, result['name'])
-                    func_info = extract_function_details(function_obj, module.__name__)
-                    search_results[index] = func_info
-                else:
-                    # is class or instance method
-                    search_results[index] = None
+                # module = importlib.import_module(module_name)
+                # if hasattr(module, result['name']):
+                #     function_obj = getattr(module, result['name'])
+                #     func_info = extract_function_details(function_obj, module.__name__)
+                #     search_results[index] = func_info
+                # else:
+                #     # is class or instance method
+                #     search_results[index] = None
+                search_results[index] = get_function_details_by_ast(module_name, result['name'])
             except Exception as e:
                 search_results[index] = None
                 print(e)
