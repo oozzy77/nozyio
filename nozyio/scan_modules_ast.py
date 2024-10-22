@@ -243,32 +243,27 @@ def extract_function_info_from_ast(function_node, module_name, nozy_node_def = {
             for index, output_type in enumerate(return_annotation):
                 outputs.append({
                     "id": index,
+                    "io_type": "output",
                     "type": output_type
                 })
         else:
             outputs.append({
                 "id": "0",
+                "io_type": "output",
                 "type": return_annotation
             })
     else:
         outputs.append({
             "id": "0",
+            "io_type": "output",
             "type": "any"
         })
-
-    # Create the import AST node
-    import_ast_node = {
-        "node_type": "ImportFrom",
-        "module": module_name,
-        "names": [{
-            "node_type": "alias",
-            "name": function_name,
-            "asname": None
-        }],
-        "level": 0
-    }
-    if nozy_node_def.get('output', nozy_node_def.get('outputs', None)):
-        outputs = nozy_node_def.get('output', nozy_node_def.get('outputs', None))
+    extra_output_info = nozy_node_def.get('output', nozy_node_def.get('outputs', None))
+    if extra_output_info is not None:
+        for index,extra_output in enumerate(extra_output_info):
+            extra_output['id'] = str(index)
+            extra_output['io_type'] = 'output'
+        outputs = extra_output_info
 
     # Create the assign AST node
     if len(outputs) == 1:
@@ -293,10 +288,22 @@ def extract_function_info_from_ast(function_node, module_name, nozy_node_def = {
                     "node_type": "Load"
                 }
             },
-            "args": [{"node_type": "Name", "id": arg["name"], "ctx": {"node_type": "Load"}} for arg in ast_args],
+            "args": ast_args,
             "keywords": []
         },
         "targets": targets
+    }
+
+    # Create the import AST node
+    import_ast_node = {
+        "node_type": "ImportFrom",
+        "module": module_name,
+        "names": [{
+            "node_type": "alias",
+            "name": function_name,
+            "asname": None
+        }],
+        "level": 0
     }
 
     return {
