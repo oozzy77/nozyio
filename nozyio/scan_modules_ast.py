@@ -54,12 +54,62 @@ def infer_type_from_default(default):
     else:
         return None
 
-def extract_function_info_from_ast(function_node, module_name):
+def process_annotation(annotation, import_aliases):
+    if annotation is not None:
+        if (isinstance(annotation, ast.Subscript) and
+            isinstance(annotation.value, ast.Name) and
+            annotation.value.id == 'Union'):
+            # Extract the types inside Union
+            if isinstance(annotation.slice, ast.Tuple):
+                # Multiple types
+                types = []
+                for elt in annotation.slice.elts:
+                    type_name = ast.unparse(elt)
+                    # Resolve alias to real class name and extract class name
+                    resolved_name = import_aliases.get(type_name, type_name)
+                    types.append(resolved_name.split('.')[-1])
+                # return types
+                return 'Union'
+            else:
+                # Single type
+                type_name = ast.unparse(annotation.slice)
+                resolved_name = import_aliases.get(type_name, type_name)
+                return [resolved_name.split('.')[-1]]
+        # Check if the annotation is a Literal
+        elif (isinstance(annotation, ast.Subscript) and
+            isinstance(annotation.value, ast.Name) and
+            annotation.value.id == 'Literal'):
+            # Extract the values inside Literal
+            if isinstance(annotation.slice, ast.Tuple):
+                # Multiple values
+                literal_values = []
+                for elt in annotation.slice.elts:
+                    try:
+                        value = ast.literal_eval(elt)
+                        literal_values.append(value)
+                    except:
+                        pass  # Cannot evaluate
+                return literal_values
+            else:
+                # Single value
+                try:
+                    value = ast.literal_eval(annotation.slice)
+                    return [value]
+                except:
+                    pass  # Cannot evaluate
+        else:
+            # For other annotations, unparse to get the string representation
+            annotation_str = ast.unparse(annotation)
+            # Check if the annotation is an alias and map it to the real class name
+            full_name = import_aliases.get(annotation_str, annotation_str)
+            # Extract only the class name
+            return full_name.split('.')[-1]
+    return None
+
+def extract_function_info_from_ast(function_node, module_name, nozy_node_def = {}, import_aliases = {}):
+    print('🔍nozy def passed in:', nozy_node_def)
     # Get the function name
     function_name = function_node.name
-
-    # Initialize NOZY_NODE_DEF
-    nozy_node_def = {}
 
     # Search for NOZY_NODE_DEF assignment within the function body
     for node in function_node.body:
@@ -84,36 +134,6 @@ def extract_function_info_from_ast(function_node, module_name):
     ast_args = []
     args = function_node.args
 
-    # Helper function to process annotations
-    def process_annotation(annotation):
-        if annotation is not None:
-            # Check if the annotation is a Literal
-            if (isinstance(annotation, ast.Subscript) and
-                isinstance(annotation.value, ast.Name) and
-                annotation.value.id == 'Literal'):
-                # Extract the values inside Literal
-                if isinstance(annotation.slice, ast.Tuple):
-                    # Multiple values
-                    literal_values = []
-                    for elt in annotation.slice.elts:
-                        try:
-                            value = ast.literal_eval(elt)
-                            literal_values.append(value)
-                        except:
-                            pass  # Cannot evaluate
-                    return literal_values
-                else:
-                    # Single value
-                    try:
-                        value = ast.literal_eval(annotation.slice)
-                        return [value]
-                    except:
-                        pass  # Cannot evaluate
-            else:
-                # For other annotations, unparse to get the string representation
-                return ast.unparse(annotation)
-        return None
-
     # Process positional arguments
     num_args = len(args.args)
     num_defaults = len(args.defaults)
@@ -136,7 +156,7 @@ def extract_function_info_from_ast(function_node, module_name):
             default_value = None
             optional = False
 
-        type_annotation = process_annotation(param_annotation)
+        type_annotation = process_annotation(param_annotation, import_aliases)
         inferred_type = infer_type_from_default(default_value)
         param_type = type_annotation or inferred_type or "any"
 
@@ -154,7 +174,7 @@ def extract_function_info_from_ast(function_node, module_name):
     if args.vararg:
         param_name = args.vararg.arg
         param_annotation = args.vararg.annotation
-        type_annotation = process_annotation(param_annotation)
+        type_annotation = process_annotation(param_annotation, import_aliases)
         param_type = type_annotation or "any"
 
         ast_args.append({
@@ -183,7 +203,7 @@ def extract_function_info_from_ast(function_node, module_name):
             default_value = None
             optional = False
 
-        type_annotation = process_annotation(param_annotation)
+        type_annotation = process_annotation(param_annotation, import_aliases)
         inferred_type = infer_type_from_default(default_value)
         param_type = type_annotation or inferred_type or "any"
 
@@ -201,7 +221,7 @@ def extract_function_info_from_ast(function_node, module_name):
     if args.kwarg:
         param_name = args.kwarg.arg
         param_annotation = args.kwarg.annotation
-        type_annotation = process_annotation(param_annotation)
+        type_annotation = process_annotation(param_annotation, import_aliases)
         param_type = type_annotation or "any"
 
         ast_args.append({
@@ -217,7 +237,7 @@ def extract_function_info_from_ast(function_node, module_name):
     # Handle outputs (return type annotation)
     outputs = []
     if function_node.returns is not None:
-        return_annotation = process_annotation(function_node.returns)
+        return_annotation = process_annotation(function_node.returns, import_aliases)
         if isinstance(return_annotation, list):
             # Multiple output types
             for index, output_type in enumerate(return_annotation):
@@ -247,6 +267,8 @@ def extract_function_info_from_ast(function_node, module_name):
         }],
         "level": 0
     }
+    if nozy_node_def.get('output', nozy_node_def.get('outputs', None)):
+        outputs = nozy_node_def.get('output', nozy_node_def.get('outputs', None))
 
     # Create the assign AST node
     if len(outputs) == 1:
@@ -288,6 +310,18 @@ def extract_function_info_from_ast(function_node, module_name):
         "astNodes": [import_ast_node, assign_ast_node]
     }
 
+def build_import_aliases(tree):
+    import_aliases = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom):
+            module = node.module
+            for alias in node.names:
+                import_aliases[alias.asname or alias.name] = f"{module}.{alias.name}"
+        elif isinstance(node, ast.Import):
+            for alias in node.names:
+                import_aliases[alias.asname or alias.name] = alias.name
+    return import_aliases
+
 def parse_python_file(file_path, module_name):
     """Parse a Python file and extract function information."""
     with open(file_path, "r") as file:
@@ -295,14 +329,9 @@ def parse_python_file(file_path, module_name):
 
     tree = ast.parse(source_code)
     functions = {}
-
+    nozy_node_defs = {}
     for node in ast.walk(tree):
-        if isinstance(node, ast.FunctionDef):
-            # Extract function information
-            func_info = extract_function_info_from_ast(node, module_name)
-            functions[node.name] = func_info
-
-        elif isinstance(node, ast.Assign):
+        if isinstance(node, ast.Assign):
             # is NOZY_NODE_DEF assign
             for target in node.targets:
                 if isinstance(target, ast.Attribute) and target.attr == 'NOZY_NODE_DEF':
@@ -310,29 +339,16 @@ def parse_python_file(file_path, module_name):
                         function_name = target.value.id
                         try:
                             nozy_node_def = ast.literal_eval(node.value)
-                            nozy_def_inputs = nozy_node_def.get('inputs', nozy_node_def.get('input', {}))
-                            if isinstance(nozy_def_inputs, list):
-                                nozy_def_inputs = {f'{input_type["name"]}': input_type for i, input_type in enumerate(nozy_def_inputs)}
-                            if function_name in functions:
-                                # is valid NOZY_NODE_DEF attribute assign
-                                functions[function_name]['node_title'] = nozy_node_def.get('node_title', None)
-                                functions[function_name]['description'] = nozy_node_def.get('description', functions[function_name]['description'])
-                                for index, input in enumerate(functions[function_name]['input']):
-                                    if input['name'] in nozy_def_inputs:
-                                        functions[function_name]['input'][index] = {
-                                            **input,
-                                            **nozy_def_inputs[input['name']]
-                                        }
-                                nozy_def_outputs = nozy_node_def.get('outputs', nozy_node_def.get('output', {}))
-                                if nozy_def_outputs:
-                                    functions[function_name]['output'] = [
-                                        {
-                                            **(functions[function_name]['output'][index] if index < len(functions[function_name]['output']) else {}),
-                                            **nozy_def_outputs[index],
-                                        } for index, output in enumerate(nozy_def_outputs)
-                                    ]
+                            if isinstance(nozy_node_def, dict):
+                                nozy_node_defs[function_name] = nozy_node_def
                         except:
                             pass
+    import_aliases = build_import_aliases(tree)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef):
+            # Extract function information
+            func_info = extract_function_info_from_ast(node, module_name, nozy_node_defs.get(node.name, {}), import_aliases)
+            functions[node.name] = func_info
 
     return list(functions.values())
 
