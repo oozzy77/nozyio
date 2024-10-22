@@ -1,3 +1,4 @@
+import importlib
 import os
 import tempfile
 import traceback
@@ -177,7 +178,7 @@ def transform_ast_nodes(node, handle_connection_map, values) -> list:
         traverse_ast_tree_and_replace(ast_node, handle_connection_map, node['id'], values)
     return ast_nodes
 
-def execute_node(node, handle_connection_map, local_vars, values):
+def execute_node_ast(node, handle_connection_map, local_vars, values):
     ast_nodes = transform_ast_nodes(node, handle_connection_map, values)
 
     code = json_dict_to_code({
@@ -189,6 +190,33 @@ def execute_node(node, handle_connection_map, local_vars, values):
     exec(code,  globals(), local_vars)
         
     return local_vars
+
+def execute_node(node, handle_connection_map, local_vars, values):
+    module = node.get('data', {}).get('module')
+    name = node.get('data', {}).get('name')
+    if not module or not name:
+        return local_vars
+    module = importlib.import_module(module)
+    func = getattr(module, name)
+    inputs = node.get('data', {}).get('input', [])
+    args = []
+    for input in inputs:
+        varid = get_handle_uid('input', node['id'], input.get('id'))
+        if varid in handle_connection_map:
+            source_varid = handle_connection_map[varid]
+            args.append(local_vars[source_varid])
+        elif varid in values:
+            args.append(values[varid])
+        else:
+            args.append(None)
+        print('👉', varid, args[-1])
+    outputs = node.get('data', {}).get('output', [])
+    outputs_uid = [get_handle_uid('output', node['id'], output.get('id')) for output in outputs]
+    res = func(*args)
+    if not isinstance(res, tuple):
+        res = (res,)  # Convert single value to tuple
+    for index, varid in enumerate(outputs_uid):
+        local_vars[varid] = res[index]
 
 
 if __name__ == '__main__':
