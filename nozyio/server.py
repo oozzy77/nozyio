@@ -142,8 +142,23 @@ async def handle_workflow_save(request):
             os.makedirs(dir)
         with open(abs_path, 'w', encoding='utf-8') as f:  # Specify UTF-8 encoding
             f.write(json.dumps(graph, ensure_ascii=False))  # Ensure non-ASCII characters are preserved
-    await asyncio.to_thread(save_workflow, graph, new)
+    try:
+        await asyncio.to_thread(save_workflow, graph, new)
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=400)
     return web.json_response({'path': path, 'root_rel': os.path.relpath(abs_path, get_root_dir())})
+
+@endpoint('/workflow/rename', method='POST')
+async def handle_workflow_rename(request):
+    body = await request.json()
+    path = body['path']
+    new_name = body['new_name']
+    abs_path = os.path.join(config['workflow_path'], path)
+    new_abs_path = os.path.join(os.path.dirname(abs_path), new_name)
+    if os.path.exists(new_abs_path):
+        return web.json_response({'error': f'{new_name} already exists, please change the name'}, status=400)
+    os.rename(abs_path, new_abs_path)
+    return web.json_response({'path': os.path.relpath(new_abs_path, config['workflow_path']), 'root_rel': os.path.relpath(new_abs_path, get_root_dir())})
 
 @endpoint('/refresh_node_def', method='POST')
 async def handle_refresh_node_def(request):

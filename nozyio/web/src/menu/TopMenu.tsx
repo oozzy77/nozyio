@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { CanvasState } from "@/type/types";
-import { common_app } from "@/common_app/app";
+import { common_app, fetchApi } from "@/common_app/app";
 import { IconDownload, IconFolderOpen } from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
 import { lazy, useRef } from "react";
@@ -8,6 +8,7 @@ import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
 import TopMenuRunButton from "./TopMenuRunButton";
 import TopMenuSaveButton from "./TopMenuSaveButton";
+import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
 const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
 const TopMenuCodePreviewButton = lazy(
   () => import("./TopMenuCodePreviewButton")
@@ -56,7 +57,32 @@ export default function TopMenu() {
           className="text-sm"
           onClick={() => {
             const userInput = prompt("Enter a name for this workflow");
-            if (userInput) {
+            if (!userInput) {
+              return;
+            }
+            const curWorkflow = getCurWorkflow();
+            if (curWorkflow) {
+              fetchApi("/workflow/rename", {
+                method: "POST",
+                body: JSON.stringify({
+                  path: curWorkflow,
+                  new_name: userInput.endsWith(".json")
+                    ? userInput
+                    : `${userInput}.json`,
+                }),
+              })
+                .then((res) => res.json())
+                .then((json) => {
+                  const newPath = json.path;
+                  if (typeof newPath !== "string") {
+                    throw new Error(json.error);
+                  }
+                  setCurWorkflow(newPath);
+                })
+                .catch((err) => {
+                  alert(`❌Failed to rename workflow: ${err.message}`);
+                });
+            } else {
               setName(userInput);
             }
           }}

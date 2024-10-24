@@ -47,6 +47,9 @@ export default function TopMenuRunButton() {
           .then((resp) => resp.json())
           .then((json) => {
             console.log("json", json);
+            if (typeof json.path !== "string") {
+              throw new Error(json.error);
+            }
             setCurWorkflow(json.path);
             onSaveGraph();
             toast({
@@ -58,7 +61,7 @@ export default function TopMenuRunButton() {
             toast({
               title: "Error saving workflow",
               variant: "destructive",
-              description: e,
+              description: e.message,
             });
             console.error(e);
           })
