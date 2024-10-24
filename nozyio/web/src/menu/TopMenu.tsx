@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { CanvasState } from "@/type/types";
-import { common_app, fetchApi } from "@/common_app/app";
+import { common_app } from "@/common_app/app";
 import { IconDownload, IconFolderOpen, IconPlus } from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
 import { lazy, useRef } from "react";
@@ -8,7 +8,6 @@ import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
 import TopMenuRunButton from "./TopMenuRunButton";
 import TopMenuSaveButton from "./TopMenuSaveButton";
-import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
 import TopMenuSwitchWorkflowButton from "./TopMenuSwitchWorkflowButton";
 import TopMenuRenameWorkflow from "./TopMenuRenameWorkflow";
 const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
@@ -17,12 +16,10 @@ const TopMenuCodePreviewButton = lazy(
 );
 
 export default function TopMenu() {
-  const { name, setName, loadGraph, isDirty, clearGraph } = useAppStore(
+  const { name, loadGraph, clearGraph } = useAppStore(
     useShallow((state: CanvasState) => ({
       name: state.name,
-      setName: state.setName,
       loadGraph: state.loadGraph,
-      isDirty: state.isDirty,
       clearGraph: state.clearGraph,
     }))
   );
@@ -58,7 +55,7 @@ export default function TopMenu() {
         <TopMenuNodes />
         <Button
           size="sm"
-          className="px-2"
+          className="px-1"
           variant="ghost"
           title="New workflow"
           onClick={() => {

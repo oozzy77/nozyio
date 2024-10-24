@@ -22,8 +22,7 @@ export default function TopMenuSwitchWorkflowButton() {
     <>
       <Button
         onClick={() => setOpen(true)}
-        // variant="secondary"
-        size={"sm"}
+        // size={"sm"}
         className="px-[8px] bg-zinc-800 hover:bg-zinc-500"
       >
         <Flex className="gap-[4px]">

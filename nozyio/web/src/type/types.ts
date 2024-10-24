@@ -58,7 +58,7 @@ export type CanvasNode = Node<ASTNodeData>;
 export type NozyGraph = {
   workflow_id?: string | null;
   job_id?: string | null;
-  name?: string | null;
+  // name?: string | null;
   job_status?: JobStatus | null;
   nodes: CanvasNode[];
   edges: Edge[];

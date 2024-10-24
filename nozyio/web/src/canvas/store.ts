@@ -22,13 +22,12 @@ import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
 const useAppStore = create<CanvasState>((set, get) => {
   const onGraphChange = () => {
     // any changes happen to the graph (nodes, edges, values, job_status) will trigger this
-    const { workflow_id, nodes, edges, values, job_status, name } = get();
+    const { workflow_id, nodes, edges, values, job_status } = get();
     common_app.graph.workflow_id = workflow_id;
     common_app.graph.nodes = nodes;
     common_app.graph.edges = edges;
     common_app.graph.values = values;
     common_app.graph.job_status = job_status ?? null;
-    common_app.graph.name = name ?? null;
     sessionStorage.setItem(
       GRAPH_CACHE_SESSION_KEY,
       JSON.stringify({
@@ -36,7 +35,6 @@ const useAppStore = create<CanvasState>((set, get) => {
         nodes,
         edges,
         values,
-        name,
       })
     );
   };
@@ -158,14 +156,13 @@ const useAppStore = create<CanvasState>((set, get) => {
       return node as CanvasNode;
     },
     loadGraph: (graph: NozyGraph) => {
-      console.log("load graph", graph);
       set({
         workflow_id: graph.workflow_id,
         nodes: graph.nodes,
         edges: graph.edges,
         values: graph.values,
         job_status: graph.job_status ?? null,
-        // name: graph.name,
+        isDirty: false,
       });
       onGraphChange();
       undoRedoInstance.addUndoStack("init");
