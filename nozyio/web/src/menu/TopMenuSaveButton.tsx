@@ -8,12 +8,13 @@ import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
 import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
 
-export default function TopMenuRunButton() {
+export default function TopMenuSaveButton() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { onSaveGraph } = useAppStore(
+  const { onSaveGraph, name } = useAppStore(
     useShallow((state: CanvasState) => ({
       onSaveGraph: state.onSaveGraph,
+      name: state.name,
     }))
   );
   return (
@@ -27,11 +28,12 @@ export default function TopMenuRunButton() {
           nodes: common_app.graph.nodes,
           edges: common_app.graph.edges,
           values: common_app.graph.values,
+          job_status: common_app.graph.job_status,
         };
         console.log("graph", graph);
         let curWf = getCurWorkflow();
         if (!curWf) {
-          curWf = prompt("Enter workflow name");
+          curWf = prompt("Enter workflow name", name ?? "");
         }
         if (!curWf) {
           return;
@@ -47,7 +49,6 @@ export default function TopMenuRunButton() {
         })
           .then((resp) => resp.json())
           .then((json) => {
-            console.log("json", json);
             if (typeof json.path !== "string") {
               throw new Error(json.error);
             }
