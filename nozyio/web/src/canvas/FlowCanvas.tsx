@@ -224,25 +224,31 @@ export function FlowCanvas() {
     >
       <Background />
       <Controls orientation="horizontal">
-        <ControlButton onClick={undoRedoInstance.undo}>
+        <ControlButton onClick={undoRedoInstance.undo} title="Undo">
           <IconArrowBackUp
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4"
           />
         </ControlButton>
-        <ControlButton onClick={undoRedoInstance.redo}>
+        <ControlButton onClick={undoRedoInstance.redo} title="Redo">
           <IconArrowForwardUp
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4"
           />
         </ControlButton>
-        <ControlButton onClick={() => onLayout("LR")}>
+        <ControlButton
+          onClick={() => onLayout("LR")}
+          title="Layout nodes horizontally"
+        >
           <IconArrowsSplit2
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4"
           />
         </ControlButton>
-        <ControlButton onClick={() => onLayout("TB")}>
+        <ControlButton
+          onClick={() => onLayout("TB")}
+          title="Layout nodes vertically"
+        >
           <IconArrowsSplit2
             size={16}
             className="!fill-[none] !max-w-4 !max-h-4 rotate-90"

@@ -17,7 +17,7 @@ import { get_handle_uid, GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import { common_app } from "@/common_app/app";
 import undoRedoInstance from "@/utils/undoRedo";
 import { nanoid } from "nanoid";
-import { getCurWorkflow } from "@/utils/routeUtils";
+import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
 
 const useAppStore = create<CanvasState>((set, get) => {
   const onGraphChange = () => {
@@ -52,13 +52,16 @@ const useAppStore = create<CanvasState>((set, get) => {
     return start.toString();
   };
   return {
-    getNextNodeID,
+    /// states ///
     workflow_id: nanoid(),
     name: "Untitled", // workflow name
     nodes: [],
     edges: [],
     values: {},
+    job_status: undefined,
     isDirty: getCurWorkflow() == null,
+    /// methods ///
+    getNextNodeID,
     onSaveGraph: () => {
       set({ isDirty: false });
     },
@@ -162,10 +165,22 @@ const useAppStore = create<CanvasState>((set, get) => {
         edges: graph.edges,
         values: graph.values,
         job_status: graph.job_status ?? null,
-        name: graph.name,
+        // name: graph.name,
       });
       onGraphChange();
       undoRedoInstance.addUndoStack("init");
+    },
+    clearGraph: () => {
+      set({
+        workflow_id: nanoid(),
+        nodes: [],
+        edges: [],
+        name: "Untitled",
+        values: {},
+        job_status: undefined,
+        isDirty: false,
+      });
+      setCurWorkflow(null);
     },
     setJobStatus: (status: JobStatus) => {
       set({ job_status: status });

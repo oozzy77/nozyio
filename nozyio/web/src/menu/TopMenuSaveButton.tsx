@@ -20,6 +20,7 @@ export default function TopMenuRunButton() {
     <Button
       variant={"ghost"}
       size="sm"
+      title="Save workflow"
       isLoading={isLoading}
       onClick={() => {
         const graph: NozyGraph = {

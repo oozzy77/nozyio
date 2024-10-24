@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { CanvasState } from "@/type/types";
 import { common_app, fetchApi } from "@/common_app/app";
-import { IconDownload, IconFolderOpen } from "@tabler/icons-react";
+import { IconDownload, IconFolderOpen, IconPlus } from "@tabler/icons-react";
 import { Flex } from "@/components/ui/Flex";
 import { lazy, useRef } from "react";
 import useAppStore from "@/canvas/store";
@@ -9,18 +9,21 @@ import { useShallow } from "zustand/shallow";
 import TopMenuRunButton from "./TopMenuRunButton";
 import TopMenuSaveButton from "./TopMenuSaveButton";
 import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
+import TopMenuSwitchWorkflowButton from "./TopMenuSwitchWorkflowButton";
+import TopMenuRenameWorkflow from "./TopMenuRenameWorkflow";
 const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
 const TopMenuCodePreviewButton = lazy(
   () => import("./TopMenuCodePreviewButton")
 );
 
 export default function TopMenu() {
-  const { name, setName, loadGraph, isDirty } = useAppStore(
+  const { name, setName, loadGraph, isDirty, clearGraph } = useAppStore(
     useShallow((state: CanvasState) => ({
       name: state.name,
       setName: state.setName,
       loadGraph: state.loadGraph,
       isDirty: state.isDirty,
+      clearGraph: state.clearGraph,
     }))
   );
 
@@ -53,14 +56,29 @@ export default function TopMenu() {
     <div className="flex items-center justify-between absolute top-0 left-0 right-0">
       <div className="flex items-center gap-2">
         <TopMenuNodes />
-        <div
+        <Button
+          size="sm"
+          className="px-2"
+          variant="ghost"
+          title="New workflow"
+          onClick={() => {
+            clearGraph();
+          }}
+        >
+          <IconPlus size={18} />
+        </Button>
+        <TopMenuSwitchWorkflowButton />
+        {/* <div
           className="text-sm"
           onClick={() => {
-            const userInput = prompt("Enter a name for this workflow");
+            const curWorkflow = getCurWorkflow();
+            const userInput = prompt(
+              "Enter a name for this workflow",
+              curWorkflow?.slice(0, -5) ?? ""
+            );
             if (!userInput) {
               return;
             }
-            const curWorkflow = getCurWorkflow();
             if (curWorkflow) {
               fetchApi("/workflow/rename", {
                 method: "POST",
@@ -89,9 +107,10 @@ export default function TopMenu() {
         >
           {isDirty && <span> * </span>}
           {name ?? "Untitled"}
-        </div>
+        </div> */}
         <Flex className="gap-0">
           <TopMenuSaveButton />
+          <TopMenuRenameWorkflow />
           <Button
             size="sm"
             variant="ghost"

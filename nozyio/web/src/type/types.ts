@@ -128,4 +128,5 @@ export type CanvasState = {
   setJobID: (job_id: string) => void;
   addEdge: (edge: Edge) => void;
   getNextNodeID: () => string;
+  clearGraph: () => void;
 };

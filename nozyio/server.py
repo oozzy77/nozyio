@@ -160,6 +160,42 @@ async def handle_workflow_rename(request):
     os.rename(abs_path, new_abs_path)
     return web.json_response({'path': os.path.relpath(new_abs_path, config['workflow_path']), 'root_rel': os.path.relpath(new_abs_path, get_root_dir())})
 
+@endpoint('/workflow/list')
+async def handle_workflow_list(request):
+    path = request.rel_url.query['path']
+    abs_path = os.path.join(config['workflow_path'], path)
+    children = []
+    for file in os.listdir(abs_path):
+        ext = file.split(".")[-1]
+        if ext != 'json':
+            continue
+        rel_path = os.path.relpath(abs_path, config['workflow_path'])
+        file_path = os.path.join(abs_path, file)
+
+        if os.path.isdir(file_path):
+            children.append({
+                "type": "folder",
+                "name": file,
+                "path": file_path,
+                "rel_path": os.path.relpath(file_path, config['workflow_path'])
+            })
+        else:
+            children.append({
+                "type": "file",
+                "name": file,
+                "path": file_path,
+                "rel_path": os.path.relpath(file_path, config['workflow_path'])
+            })
+    return web.json_response(children)
+
+@endpoint('/workflow/get')
+async def handle_workflow_get(request):
+    path = request.rel_url.query['path']
+    abs_path = os.path.join(config['workflow_path'], path)
+    with open(abs_path, 'r', encoding='utf-8') as f:
+        graph = json.load(f)
+    return web.json_response(graph)
+
 @endpoint('/refresh_node_def', method='POST')
 async def handle_refresh_node_def(request):
     graph = await request.json()
