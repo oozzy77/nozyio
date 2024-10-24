@@ -67,22 +67,6 @@ export function FlowCanvas() {
   useCopyAndPaste();
 
   useEffect(() => {
-    // restore graph from session cache
-    const graphStr = sessionStorage.getItem(GRAPH_CACHE_SESSION_KEY);
-    if (graphStr) {
-      loadGraph(JSON.parse(graphStr));
-      // refresh node def
-      fetchApi("/refresh_node_def", {
-        method: "POST",
-        body: graphStr,
-      })
-        .then((res) => res.json())
-        .then((graph) => {
-          loadGraph(graph);
-        });
-    }
-
-    console.log("connecting to websocket", common_app.wsUrl);
     const ws = new WebSocket(common_app.wsUrl);
     ws.onopen = () => {
       console.log("websocket connected");

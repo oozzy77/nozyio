@@ -1,10 +1,12 @@
+import type { NozyGraph } from "@/type/types";
+
 export const getCurWorkflow = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const workflow = searchParams.get("wf");
-  return workflow;
+  return workflow ? decodeURIComponent(workflow) : null;
 };
 
-export const setCurWorkflow = (workflow: string | null) => {
+export const setCurWorkflow = (workflow: string | null, graph?: NozyGraph) => {
   const searchParams = new URLSearchParams(window.location.search);
   if (workflow) {
     searchParams.set("wf", encodeURIComponent(workflow));
@@ -15,5 +17,7 @@ export const setCurWorkflow = (workflow: string | null) => {
     ? `${window.location.pathname}?${searchParams.toString()}`
     : window.location.pathname;
   window.history.pushState({}, "", newUrl);
-  dispatchEvent(new CustomEvent("setCurWorkflow", { detail: workflow }));
+  dispatchEvent(
+    new CustomEvent("setCurWorkflow", { detail: { workflow, graph } })
+  );
 };

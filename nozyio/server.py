@@ -196,6 +196,15 @@ async def handle_workflow_get(request):
         graph = json.load(f)
     return web.json_response(graph)
 
+@endpoint('/workflow/get_default')
+async def handle_workflow_get_default(request):
+    abs_path = config['workflow_path']
+    # find the first json file
+    for file in os.listdir(abs_path):
+        if file.endswith('.json'):
+            return web.json_response(file)
+    return web.json_response(None)
+
 @endpoint('/refresh_node_def', method='POST')
 async def handle_refresh_node_def(request):
     graph = await request.json()

@@ -10,6 +10,7 @@ import { CanvasState, NozyGraph } from "./type/types";
 import { useShallow } from "zustand/shallow";
 import { fetchApi } from "./common_app/app";
 import { getCurWorkflow, setCurWorkflow } from "./utils/routeUtils";
+import { GRAPH_CACHE_SESSION_KEY } from "./utils/canvasUtils";
 const TopMenu = lazy(() => import("./menu/TopMenu"));
 const FlowCanvas = lazy(() => import("./canvas/FlowCanvas"));
 
@@ -21,26 +22,49 @@ export default function App() {
     }))
   );
   useEffect(() => {
-    const initialWorkflow = getCurWorkflow();
-    setCurWorkflow(initialWorkflow);
     window.addEventListener("setCurWorkflow", (e: Event) => {
-      const customEvent = e as CustomEvent<string>;
-      if (typeof customEvent.detail !== "string") {
+      const customEvent = e as CustomEvent<{
+        workflow: string;
+        graph: NozyGraph;
+      }>;
+      const { workflow, graph } = customEvent.detail;
+      if (typeof workflow !== "string") {
         return;
       }
-      const name = customEvent.detail.slice(0, -5);
+      const name = workflow.slice(0, -5);
       setName(name);
-      fetchApi(`/workflow/get?path=${encodeURIComponent(customEvent.detail)}`)
-        .then((res) => res.json())
-        .then((json: NozyGraph) => {
-          if (!json.nodes) {
-            console.error("Invalid graph");
-            alert("❌Invalid nozy workflow");
-            return;
-          }
-          loadGraph(json);
-        });
+      if (graph) {
+        loadGraph(graph);
+      } else {
+        fetchApi(`/workflow/get?path=${encodeURIComponent(workflow)}`)
+          .then((res) => res.json())
+          .then((json: NozyGraph) => {
+            if (!json.nodes) {
+              console.error("Invalid graph");
+              alert("❌Invalid nozy workflow");
+              return;
+            }
+            loadGraph(json);
+          });
+      }
     });
+
+    const initialWorkflow = getCurWorkflow();
+    // restore graph from session cache if exists
+    const graphStr = sessionStorage.getItem(GRAPH_CACHE_SESSION_KEY);
+    if (initialWorkflow) {
+      setCurWorkflow(initialWorkflow, graphStr ? JSON.parse(graphStr) : null);
+    } else if (graphStr) {
+      loadGraph(JSON.parse(graphStr));
+    } else {
+      fetchApi("/workflow/get_default")
+        .then((res) => res.json())
+        .then((json) => {
+          if (json && typeof json === "string") {
+            setCurWorkflow(json);
+          }
+        });
+    }
   }, []);
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">

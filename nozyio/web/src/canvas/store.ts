@@ -14,7 +14,7 @@ import {
   ShowSearchEvent,
 } from "../type/types";
 import { get_handle_uid, GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
-import { common_app } from "@/common_app/app";
+import { common_app, fetchApi } from "@/common_app/app";
 import undoRedoInstance from "@/utils/undoRedo";
 import { nanoid } from "nanoid";
 import { getCurWorkflow, setCurWorkflow } from "@/utils/routeUtils";
@@ -35,6 +35,7 @@ const useAppStore = create<CanvasState>((set, get) => {
         nodes,
         edges,
         values,
+        curWorkflow: getCurWorkflow(),
       })
     );
   };
@@ -166,6 +167,16 @@ const useAppStore = create<CanvasState>((set, get) => {
       });
       onGraphChange();
       undoRedoInstance.addUndoStack("init");
+
+      // refresh node def
+      fetchApi("/refresh_node_def", {
+        method: "POST",
+        body: JSON.stringify(graph),
+      })
+        .then((res) => res.json())
+        .then((graph) => {
+          set({ nodes: graph.nodes });
+        });
     },
     clearGraph: () => {
       set({

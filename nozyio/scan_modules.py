@@ -207,6 +207,8 @@ def refresh_node_def(graph: dict):
                 node_def = get_function_details_by_ast(module_name, name)
                 if isinstance(node_def, dict):
                     node['data'] = node_def
+                else:
+                    node['data']['import_error'] = 'function not found'
         except Exception as e:
             print(f'❌ error refreshing node def for {module_name} {name}: {e}')
             print(traceback.format_exc())

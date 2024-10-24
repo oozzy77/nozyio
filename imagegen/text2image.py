@@ -2,14 +2,14 @@ from diffusers import AutoPipelineForText2Image
 import torch
 from nozyio import device_management
 
-def text_to_image(prompt:str = "An astrounaut riding a horse"):
+def text_to_image(prompt = "An astrounaut riding a horse"):
     pipeline = AutoPipelineForText2Image.from_pretrained(
         "stable-diffusion-v1-5/stable-diffusion-v1-5", torch_dtype=torch.float16, variant="fp16"
     ).to(device_management.device)
     generator = torch.Generator(device_management.device).manual_seed(31)
     return pipeline(prompt, generator=generator).images[0]
 text_to_image.NOZY_NODE_DEF = {
-    "node_title": "Text to Image gen",
+    "node_title": "Image generator",
     "description": "Generate an image from a text prompt",
 }
 
