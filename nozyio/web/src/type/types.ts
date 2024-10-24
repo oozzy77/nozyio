@@ -110,6 +110,8 @@ export type CanvasState = {
   values: {
     [key: string]: any;
   };
+  isDirty: boolean;
+  onSaveGraph: () => void;
   updateValues: (change: Record<string, any>) => void;
   showSearch: ShowSearchEvent | null;
   setShowSearch: (show: ShowSearchEvent | null) => void;

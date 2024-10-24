@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { addEdge, applyNodeChanges, applyEdgeChanges } from "@xyflow/react";
+import {
+  addEdge,
+  applyNodeChanges,
+  applyEdgeChanges,
+  Edge,
+} from "@xyflow/react";
 
 import {
   CanvasNode,
@@ -12,6 +17,7 @@ import { get_handle_uid, GRAPH_CACHE_SESSION_KEY } from "@/utils/canvasUtils";
 import { common_app } from "@/common_app/app";
 import undoRedoInstance from "@/utils/undoRedo";
 import { nanoid } from "nanoid";
+import { getCurWorkflow } from "@/utils/routeUtils";
 
 const useAppStore = create<CanvasState>((set, get) => {
   const onGraphChange = () => {
@@ -52,6 +58,10 @@ const useAppStore = create<CanvasState>((set, get) => {
     nodes: [],
     edges: [],
     values: {},
+    isDirty: getCurWorkflow() == null,
+    onSaveGraph: () => {
+      set({ isDirty: false });
+    },
     selectedNodeIDs: [],
     setSelectedNodeIDs: (node: string[]) => {
       set({ selectedNodeIDs: node });
@@ -72,6 +82,7 @@ const useAppStore = create<CanvasState>((set, get) => {
       set({ values: newValues });
       // save graph to session cache
       onGraphChange();
+      set({ isDirty: true });
     },
     onNodesChange: (changes) => {
       undoRedoInstance.addUndoStack("onNodesChange", changes);
@@ -94,6 +105,11 @@ const useAppStore = create<CanvasState>((set, get) => {
       set({ values: newValues });
 
       onGraphChange();
+
+      const nodesChanged = changes.some((change) => change.type !== "select");
+      if (nodesChanged) {
+        set({ isDirty: true });
+      }
     },
     onEdgesChange: (changes) => {
       undoRedoInstance.addUndoStack("onEdgesChange", changes);
@@ -101,10 +117,11 @@ const useAppStore = create<CanvasState>((set, get) => {
         edges: applyEdgeChanges(changes, get().edges),
       });
       onGraphChange();
+      set({ isDirty: true });
     },
     addEdge: (edge: Edge) => {
       set({ edges: get().edges.concat(edge) });
-      onGraphChange();
+      set({ isDirty: true });
     },
     onConnect: (connection) => {
       undoRedoInstance.addUndoStack("onConnect");
@@ -112,6 +129,7 @@ const useAppStore = create<CanvasState>((set, get) => {
         edges: addEdge(connection, get().edges),
       });
       onGraphChange();
+      set({ isDirty: true });
     },
     setNodes: (nodes) => {
       set({ nodes });
@@ -133,7 +151,7 @@ const useAppStore = create<CanvasState>((set, get) => {
           input.default ?? null;
       });
       set({ values: newValues });
-      onGraphChange();
+      set({ isDirty: true });
       return node as CanvasNode;
     },
     loadGraph: (graph: NozyGraph) => {

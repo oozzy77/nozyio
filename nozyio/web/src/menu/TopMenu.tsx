@@ -7,17 +7,19 @@ import { lazy, useRef } from "react";
 import useAppStore from "@/canvas/store";
 import { useShallow } from "zustand/shallow";
 import TopMenuRunButton from "./TopMenuRunButton";
+import TopMenuSaveButton from "./TopMenuSaveButton";
 const TopMenuNodes = lazy(() => import("./TopMenuNodes"));
 const TopMenuCodePreviewButton = lazy(
   () => import("./TopMenuCodePreviewButton")
 );
 
 export default function TopMenu() {
-  const { name, setName, loadGraph } = useAppStore(
+  const { name, setName, loadGraph, isDirty } = useAppStore(
     useShallow((state: CanvasState) => ({
       name: state.name,
       setName: state.setName,
       loadGraph: state.loadGraph,
+      isDirty: state.isDirty,
     }))
   );
 
@@ -59,9 +61,11 @@ export default function TopMenu() {
             }
           }}
         >
+          {isDirty && <span> * </span>}
           {name ?? "Untitled"}
         </div>
         <Flex className="gap-0">
+          <TopMenuSaveButton />
           <Button
             size="sm"
             variant="ghost"

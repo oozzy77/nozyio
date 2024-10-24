@@ -127,6 +127,24 @@ async def handle_search_functions(request):
     results = await asyncio.to_thread(search_codebase, query)
     return web.json_response(results)
 
+@endpoint('/workflow/save', method='POST')
+async def handle_workflow_save(request):
+    body = await request.json()
+    graph = body['graph']
+    path = body.get('path', '')
+    new = body.get('new', False)
+    abs_path = os.path.join(config['workflow_path'], path)
+    def save_workflow(graph, new):
+        if new and os.path.exists(abs_path):
+            raise Exception(f'File {abs_path} already exists, please change the name')
+        dir = os.path.dirname(abs_path)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        with open(abs_path, 'w', encoding='utf-8') as f:  # Specify UTF-8 encoding
+            f.write(json.dumps(graph, ensure_ascii=False))  # Ensure non-ASCII characters are preserved
+    await asyncio.to_thread(save_workflow, graph, new)
+    return web.json_response({'path': path, 'root_rel': os.path.relpath(abs_path, get_root_dir())})
+
 @endpoint('/refresh_node_def', method='POST')
 async def handle_refresh_node_def(request):
     graph = await request.json()

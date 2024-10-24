@@ -216,7 +216,6 @@ export function FlowCanvas() {
         },
       }}
       onNodeClick={(_event, node) => {
-        console.log("node click #" + node.id);
         setSelectedNodeIDs([node.id]);
       }}
       onPaneClick={onPaneClick}
