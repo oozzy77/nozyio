@@ -32,8 +32,8 @@ from PIL.Image import Image
 def resize_image(
     image: Image,
     width: int = 512,
-    height: int = 512,
-    method: Literal["stretch", "fit", "crop", "resize to width", "resize to height"],
+    height: int = 768,
+    method: Literal["stretch", "fit", "crop"],
     interpolation: str
 ) -> Image:
     # ...some code here...
