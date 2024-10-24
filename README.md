@@ -12,7 +12,6 @@ demo: https://www.youtube.com/watch?v=8rvxua4AmAo
 
 <img width="1723" alt="378056651-d6c5f930-cedc-426a-aaa8-11cdb92c6cd4-min" src="https://github.com/user-attachments/assets/be4cf1fc-7e71-4e35-91e8-5622a792cd93">
 
-
 ## Install
 
 In your python project root:
@@ -45,8 +44,9 @@ resize_image.NOZY_NODE_DEF = {
 }
 
 ```
+
 👇This function will be rendered as below. You can see that all args default values are populated as the input box defaults
- 
+
 <img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
 
 **👇Export workflow to code, preview any image input/output**
@@ -61,32 +61,25 @@ resize_image.NOZY_NODE_DEF = {
 
 <img width="400" alt="Screenshot 2024-10-19 at 10 42 41 PM" src="https://github.com/user-attachments/assets/f18b4569-ee60-4385-ad95-3fe72a9e5f43">
 
-
-### Define a node
+### Node input types
 
 Nozyio will automatically scan your python functions and convert them to nodes. You can define the input, output types by adding **type annotations** to the function parameters and return type. Params with no type annotation will become "any" type.
 
-| Python Type             | UI Element         | HTML element            |
-| ----------------------- | ------------------ | ----------------------- |
-| `int`                   | number input box   | `<input type="number">` |
-| `str`                   | text input box      | `<textfield type="text">`   |
-| `Literal["abc", "xyz"]` | dropdown input box | `<select>`              |
-| `PIL.Image.Image`       | image preview      | `<img>`                 |
+| Python Type             | UI Element         | HTML element              |
+| ----------------------- | ------------------ | ------------------------- |
+| `int`                   | number input box   | `<input type="number">`   |
+| `str`                   | text input box     | `<textfield type="text">` |
+| `Literal["abc", "xyz"]` | dropdown input box | `<select>`                |
+| `PIL.Image.Image`       | image preview      | `<img>`                   |
 
-**Example:**
+### Input widgets
 
 You can also add custom **UI widgets** to the input parameters by adding a `widget` field to the input definition. In below example, we use `server_file_picker` widget to let user select an image file from the files on the server:
 
 ```python
 from PIL import Image.Image
 def load_image(image_path: str) -> Image.Image:
-    if image_path.startswith('http://') or image_path.startswith('https://'):
-        response = requests.get(image_path)
-        response.raise_for_status()  # Raises an error for bad responses
-        image_data = BytesIO(response.content)
-        return Image.open(image_data)
-    else:
-        return Image.open(image_path)
+    return Image.open(image_path)
 load_image.NOZY_NODE_DEF = {
     "node_title": "Load Image",
     "description": "Load image from path",
