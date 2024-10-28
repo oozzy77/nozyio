@@ -1,7 +1,7 @@
 [
   {
     "name": "image_lab_nodes",
-    "description": "[Beta] Nodes for image processing and ai image generation",
+    "description": "[Beta] Nodes for image processing and AI image generation. Will install pytorch with it, therefore SLOW installation",
     "url": "https://github.com/oozzy77/image_lab_nodes"
   },
   {
