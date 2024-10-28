@@ -222,7 +222,7 @@ async def handle_install_node_package(request):
     body = await request.json()
     url = body['url']
     try:
-        install_node_package(url)
+        await asyncio.to_thread(install_node_package, url)
     except Exception as e:
         return web.json_response({'error': str(e)}, status=400)
     return web.json_response({'status': 'ok'})
