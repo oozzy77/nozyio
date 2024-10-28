@@ -10,16 +10,16 @@ import traceback
 from .scan_modules_ast import get_function_details_by_ast
 from .scan_modules import extract_function_details
 
-import pkg_resources
+# import pkg_resources
 
-def get_pip_packages_list() -> list:
-    packages = []
-    for dist in pkg_resources.working_set:
-        packages.append({
-            'name': dist.project_name,
-            'version': dist.version
-        })
-    return packages
+# def get_pip_packages_list() -> list:
+#     packages = []
+#     for dist in pkg_resources.working_set:
+#         packages.append({
+#             'name': dist.project_name,
+#             'version': dist.version
+#         })
+#     return packages
 
 def get_ripgrep_binary():
     system = platform.system().lower()
