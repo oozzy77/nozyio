@@ -1,15 +1,15 @@
 # NozyIO
 
-**Python AI / ML pipeline visualization tool.** Fastest way to add a pipeline GUI demo to your python ML/AI project effortlessly. You can easily pick input files, tune parameters, and preview any image input/output from the GUI. It can also be used as a visual scripting tool for python.
+**Python AI / ML pipeline visualization tool.** Fastest way to demo your python program for customers to tweak and expand. Perfect for AI/ML engineers and designers to collaborate, turning ML components into UI nodes for easy tweaking.
+
+It can also be used as a visual scripting tool for python.
 
 demo: https://youtu.be/L_6kY-fhIcU
 
 - **Automatically discover python functions as nodes** with parameters typing
-- Visual file picker GUI for any function inputs requires file
-- Visualize output results of each step/node, including images, charts
+- Visually pick input files, tune parameters, and preview any image input/output from the GUI
 - Save pipeline graph as json and **switch between pipelines quickly**
 - Export the pipeline graph as Python code
-- Python visual scripting
 
 <img width="1723" alt="378056651-d6c5f930-cedc-426a-aaa8-11cdb92c6cd4-min" src="https://github.com/user-attachments/assets/be4cf1fc-7e71-4e35-91e8-5622a792cd93">
 
