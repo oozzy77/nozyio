@@ -7,7 +7,7 @@ import {
 } from "@xyflow/react";
 import { ASTNode } from "./astNodeTypes";
 
-export type ParamType = "str" | "int" | "float" | "bool" | "any";
+export type ParamType = "str" | "int" | "float" | "bool" | "any" | "filepath";
 export type FunctionNodeData = {
   type: "function" | "class";
   name: string;

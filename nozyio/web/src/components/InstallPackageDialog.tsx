@@ -5,9 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Stack } from "./ui/Stack";
-import { Flex } from "./ui/Flex";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -56,18 +55,24 @@ export default function InstallPackageDialog({
           <DialogTitle>Community Node Packages</DialogTitle>
         </DialogHeader>
         <Stack>
-          {packages.map((pkg) => (
-            <Flex key={pkg.url} className="gap-2">
-              <p className="font-bold flex-1">{pkg.name}</p>
-              <p className="flex-2 mr-4">{pkg.description}</p>
-              <Button
-                onClick={() => installPackage(pkg.url)}
-                isLoading={installingUrl === pkg.url}
-              >
-                Install
-              </Button>
-            </Flex>
-          ))}
+          <div className="grid grid-cols-[2fr_3fr_1fr] gap-4">
+            {/* <div className="font-bold">Name</div>
+            <div className="font-bold">Description</div>
+            <div className="font-bold">Install</div> */}
+            {packages.map((pkg) => (
+              <Fragment key={pkg.url}>
+                <div className="font-bold">{pkg.name}</div>
+                <div>{pkg.description}</div>
+
+                <Button
+                  onClick={() => installPackage(pkg.url)}
+                  isLoading={installingUrl === pkg.url}
+                >
+                  Install
+                </Button>
+              </Fragment>
+            ))}
+          </div>
         </Stack>
       </DialogContent>
     </Dialog>

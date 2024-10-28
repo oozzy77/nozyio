@@ -2,6 +2,7 @@ import ast
 import importlib
 import json
 import os
+import traceback
 def is_serializable(value):
     try:
         json.dumps(value)
@@ -340,17 +341,18 @@ def parse_python_file_dict(file_path, module_name) -> dict[str, dict]:
     nozy_node_defs = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign):
-            # is NOZY_NODE_DEF assign
             for target in node.targets:
                 if isinstance(target, ast.Attribute) and target.attr == 'NOZY_NODE_DEF':
                     if isinstance(target.value, ast.Name):
+                        # is NOZY_NODE_DEF assign
                         function_name = target.value.id
                         try:
                             nozy_node_def = ast.literal_eval(node.value)
                             if isinstance(nozy_node_def, dict):
                                 nozy_node_defs[function_name] = nozy_node_def
-                        except:
-                            pass
+                        except Exception as e:
+                            print('❌error parsing NOZY_NODE_DEF', e, traceback.format_exc())
+                            
     import_aliases = build_import_aliases(tree)
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):

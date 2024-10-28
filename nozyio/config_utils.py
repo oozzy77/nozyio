@@ -43,3 +43,5 @@ def should_ignore(path: str) -> bool:
     return any(path.startswith(ignore) for ignore in config['ignore'])
 
 config = get_config()
+
+nz_config = config

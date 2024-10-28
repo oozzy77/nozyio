@@ -24,7 +24,7 @@ export default function ASTFunctionNodeInput({
   isConnected: boolean;
 }) {
   const isNumber = input.type === "int" || input.type === "float";
-  const widget = input.widget;
+  const widget = input.widget || input.type === "filepath";
 
   return (
     <Stack
@@ -63,14 +63,17 @@ function InputWidget({
   input,
   nodeID,
 }: {
-  input: ASTNodeInput;
+  input: ASTNodeInput & { accept?: string };
   nodeID: string;
 }) {
-  if (input.widget?.type === "server_file_picker") {
+  if (
+    input.widget?.type === "server_file_picker" ||
+    input.type === "filepath"
+  ) {
     return (
       <ServerFilePicker
         input={input}
-        extensions={input.widget.options?.extensions}
+        extensions={input.widget?.options?.extensions ?? input.accept}
         nodeID={nodeID}
       />
     );
