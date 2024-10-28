@@ -14,7 +14,7 @@ def get_config() -> dict:
         'workflow_path': 'nozy/workflows',
         'output_path': 'nozy/outputs',
         'HF_HOME': './models',
-        'HF_HUB_OFFLINE': 'True',
+        'HF_HUB_OFFLINE': 'False',
         'ignore': ['node_modules', 'venv', '.env', '.git', '__pycache__', 'dist', '.DS_Store', 'nozyio.egg-info', 'nozyio'],
         **config,
     }
