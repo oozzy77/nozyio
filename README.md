@@ -1,11 +1,12 @@
 # NozyIO
 
-**Python AI/ML pipeline visualization and orchestration UI for your codebase**. Add a pipeline workflow GUI demo to your python project effortlessly.
+**Python AI / ML pipeline visualization tool.** Fastest way to add a pipeline GUI demo to your python ML/AI project effortlessly. You can easily pick input files, tune parameters, and preview any image input/output from the GUI. It can also be used as a visual scripting tool for python.
 
-demo: https://www.youtube.com/watch?v=8rvxua4AmAo
+demo: https://youtu.be/L_6kY-fhIcU
 
 - Workflow nodes editor for your python code
-- **Automatically scan your python functions to nodes** with params typing
+- **Automatically discover python functions as nodes** with parameters typing
+- Visual file picker GUI for any function inputs requires file
 - Visualize output results of each step/node, including images, charts
 - Export the pipeline graph as Python code
 - Python visual scripting
@@ -72,7 +73,7 @@ Nozyio will automatically scan your python functions and convert them to nodes. 
 | `Literal["abc", "xyz"]` | dropdown input box | `<select>`                |
 | `PIL.Image.Image`       | image preview      | `<img>`                   |
 
-### Input widgets
+### Input widgets - file picker
 
 You can also add custom **UI widgets** to the input parameters by adding a `widget` field to the input definition. In below example, we use `server_file_picker` widget to let user select an image file from the files on the server:
 
@@ -102,10 +103,23 @@ load_image.NOZY_NODE_DEF = {
 
 <img width="349" alt="Screenshot 2024-10-19 at 9 37 21 PM" src="https://github.com/user-attachments/assets/529bf77e-99c6-4ff8-8487-c383bf4d92c1">
 
+<img width="908" alt="Screenshot 2024-10-29 at 2 05 35 AM" src="https://github.com/user-attachments/assets/7c1820df-0078-467d-b3f6-294fec6ffa14">
+
 ## Future Plans
 
 - [ ] Visualize your python code to graph flow
 - [ ] AI image nodes packages
+
+## Screenshots
+
+👇 Install community pacakges
+
+<img width="935" alt="007 install-community-packages" src="https://github.com/user-attachments/assets/e09ccca0-45b3-46f6-af4f-b263091c5c14">
+
+👇 Switch workflows quickly
+
+![005 workflow_switcher](https://github.com/user-attachments/assets/0cf81e9d-3219-43ac-ba75-bad0bd3f8bdc)
+
 
 ## Development
 
@@ -138,4 +152,4 @@ To build and publish to pypi:
 
 ## Credits
 
-Lots of code are referenced from ComfyUI (https://github.com/comfyanonymous/ComfyUI)
+This project is inspired by ComfyUI. Lots of code are referenced from ComfyUI (https://github.com/comfyanonymous/ComfyUI) Sincerely thanks to the contributors of ComfyUI!
