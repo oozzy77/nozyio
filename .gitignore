@@ -5,7 +5,8 @@ __pycache__/
 config.py.example
 *.py[cod]
 /outputs/
-/nozy/
+/nozy/outputs
+!/nozy/packages/*
 /nz_outputs/
 /input/
 /models/

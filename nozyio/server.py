@@ -4,6 +4,7 @@ import sys
 import tempfile
 from aiohttp import web
 import os
+from .node_package import list_community_node_packages, install_node_package
 from .code_to_graph import code_to_graph
 from .ast_execution import execute_graph, graph_to_code
 from .file_picker import list_files
@@ -210,6 +211,21 @@ async def handle_refresh_node_def(request):
     graph = await request.json()
     new_graph = refresh_node_def(graph)
     return web.json_response(new_graph)
+
+@endpoint('/package/list_community')
+async def handle_list_community_packages(request):
+    packages = list_community_node_packages()
+    return web.json_response(packages)
+
+@endpoint('/package/install', method='POST')
+async def handle_install_node_package(request):
+    body = await request.json()
+    url = body['url']
+    try:
+        install_node_package(url)
+    except Exception as e:
+        return web.json_response({'error': str(e)}, status=400)
+    return web.json_response({'status': 'ok'})
 
 @endpoint('/')
 async def handle_index(request):

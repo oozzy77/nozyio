@@ -9,7 +9,7 @@ def get_config() -> dict:
         with open("config.json", "r") as f:
             config = json.load(f)
     config = {
-        'package_path': 'nz_packages',
+        'package_path': 'nozy/packages',
         'model_paths': ['models'],
         'workflow_path': 'nozy/workflows',
         'output_path': 'nozy/outputs',
