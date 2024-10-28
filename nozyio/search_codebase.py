@@ -65,19 +65,20 @@ def search_codebase(search_term):
 
     rg_command = [
         binary_path, '-n', '--no-heading', '--color', 'never',
-        r'^\s*(class|def)\s+\w+',  # regex to find class and function definitions
+        rf'^\s*(class|def)\s+\w*{re.escape(search_term)}\w*',  # regex to find class and function definitions containing the search term
         '.',
         '--glob', '*.py',  # Include only .py files
     ]
 
     result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    MAX_RESULTS = 20
+    MAX_RESULTS = 100
     if result.returncode == 0:
         matches = result.stdout.splitlines()
+
         # Filter the matches based on the search term
-        filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
+        # filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
         # Parse each match to extract file_path, function name, type
-        search_results = [parse_match(match) for match in filtered_matches if parse_match(match)]
+        search_results = [parse_match(match) for match in matches if parse_match(match)]
         search_results = search_results[:MAX_RESULTS]
         # import modules to extract function details
         for index, result in enumerate(search_results):
