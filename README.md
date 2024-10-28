@@ -1,6 +1,6 @@
 # NozyIO
 
-**Python AI / ML pipeline visualization tool.** Fastest way to demo your python program for customers to tweak and expand. Perfect for AI/ML engineers and designers to collaborate, turning ML components into UI nodes for easy tweaking.
+**Python AI / ML pipeline visualization tool.** Automatically discover your functions as pipeline nodes. Fastest way to demo your python program for customers to tweak and expand. Perfect for AI/ML engineers and designers to collaborate, turning ML components into UI nodes for easy tweaking.
 
 It can also be used as a visual scripting tool for python.
 
