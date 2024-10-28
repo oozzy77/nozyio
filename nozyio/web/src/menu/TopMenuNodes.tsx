@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import CustomDrawer from "@/components/ui/CustomDrawer";
 import { useState } from "react";
-import { IconBox } from "@tabler/icons-react";
+import { IconBox, IconPlus } from "@tabler/icons-react";
 import FunctionFilesList from "./FunctionFilesList";
 import { Stack } from "@/components/ui/Stack";
 import { Flex } from "@/components/ui/Flex";
@@ -21,8 +21,11 @@ export default function TopMenuNodes() {
           <Stack className="w-[400px] py-2 px-2 overflow-y-auto h-[100vh]">
             <Flex className="justify-between">
               <h2 className="text-xl font-bold p-2">Nodes</h2>
-              <Button onClick={() => setInstallPackageDialogOpen(true)}>
-                Install Node Package
+              <Button
+                onClick={() => setInstallPackageDialogOpen(true)}
+                left={<IconPlus size={18} />}
+              >
+                <span>Install Node Package</span>
               </Button>
             </Flex>
             <FunctionFilesList path="" />

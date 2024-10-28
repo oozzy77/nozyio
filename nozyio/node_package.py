@@ -47,7 +47,8 @@ def install_node_package(url: str):
 
 def list_community_node_packages():
     packages = []
-    with open("node_packages.json", "r") as f:
+    community_packages_list = os.path.join(os.path.dirname(__file__), "community_packages.json")
+    with open(community_packages_list, "r") as f:
         packages = json.load(f)
     return packages
     

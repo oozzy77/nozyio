@@ -86,7 +86,7 @@ function FolderNode({ node }: { node: FunctionFileTreeNode }) {
   return (
     <Stack className="">
       <div
-        className="flex flex-row items-center cursor-pointer"
+        className="flex flex-row items-center cursor-pointer hover:bg-secondary"
         onClick={() => setOpen(!open)}
       >
         <IconTriangleInvertedFilled
