@@ -9,6 +9,8 @@ import { Fragment, useEffect, useState } from "react";
 import { Stack } from "./ui/Stack";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { IconBrandGithub } from "@tabler/icons-react";
+import { Flex } from "./ui/Flex";
 
 export default function InstallPackageDialog({
   onClose,
@@ -55,23 +57,35 @@ export default function InstallPackageDialog({
           <DialogTitle>Community Node Packages</DialogTitle>
         </DialogHeader>
         <Stack>
-          <div className="grid grid-cols-[2fr_3fr_1fr] gap-4">
+          <div className="grid grid-cols-[2fr_3fr_1fr_1fr] gap-4">
             {/* <div className="font-bold">Name</div>
             <div className="font-bold">Description</div>
             <div className="font-bold">Install</div> */}
-            {packages.map((pkg) => (
-              <Fragment key={pkg.url}>
-                <div className="font-bold">{pkg.name}</div>
-                <div>{pkg.description}</div>
+            {packages.map((pkg) => {
+              return (
+                <Fragment key={pkg.url}>
+                  <div className="font-bold">{pkg.name}</div>
+                  <div>{pkg.description}</div>
+                  <Flex>
+                    <a
+                      href={pkg.url}
+                      target="_blank"
+                      className="flex items-center"
+                    >
+                      <IconBrandGithub size={18} />
+                      <span className="ml-1">Github</span>
+                    </a>
+                  </Flex>
 
-                <Button
-                  onClick={() => installPackage(pkg.url)}
-                  isLoading={installingUrl === pkg.url}
-                >
-                  Install
-                </Button>
-              </Fragment>
-            ))}
+                  <Button
+                    onClick={() => installPackage(pkg.url)}
+                    isLoading={installingUrl === pkg.url}
+                  >
+                    Install
+                  </Button>
+                </Fragment>
+              );
+            })}
           </div>
         </Stack>
       </DialogContent>
