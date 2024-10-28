@@ -6,6 +6,7 @@ import platform
 import stat
 import subprocess
 import re
+import traceback
 from .scan_modules_ast import get_function_details_by_ast
 from .scan_modules import extract_function_details
 
@@ -54,8 +55,8 @@ def search_codebase(search_term):
         pattern = r'^(?P<file_path>.*?):\d+:\s*(?P<type>class|def)\s+(?P<name>\w+)'
         # pattern = r'^(?P<file_path>.*?):\d+:\s*def\s+(?P<name>\w+)\s*\(' # search module level functions only
         match = re.match(pattern, line)
-        file_path = os.path.relpath(match.group("file_path"))
         if match:
+            file_path = os.path.relpath(match.group("file_path"))
             return {
                 "name": match.group("name"),
                 "type": "class" if match.group("type") == "class" else "function",
@@ -71,14 +72,20 @@ def search_codebase(search_term):
     ]
 
     result = subprocess.run(rg_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    MAX_RESULTS = 100
+    MAX_RESULTS = 1000
     if result.returncode == 0:
         matches = result.stdout.splitlines()
+        matches = matches[:MAX_RESULTS]
 
-        # Filter the matches based on the search term
-        # filtered_matches = [match for match in matches if search_term.lower() in match.lower()]
         # Parse each match to extract file_path, function name, type
-        search_results = [parse_match(match) for match in matches if parse_match(match)]
+        search_results = []
+        for match in matches:
+            parsed = parse_match(match)
+            if parsed:
+                search_results.append(parsed)
+                if len(search_results) >= MAX_RESULTS:
+                    break
+
         search_results = search_results[:MAX_RESULTS]
         # import modules to extract function details
         for index, result in enumerate(search_results):
@@ -96,7 +103,8 @@ def search_codebase(search_term):
                 search_results[index] = get_function_details_by_ast(module_name, result['name'])
             except Exception as e:
                 search_results[index] = None
-                print(e)
+                print(e, traceback.format_exc())
+
         return search_results
     else:
         return []

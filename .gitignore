@@ -6,7 +6,7 @@ config.py.example
 *.py[cod]
 /outputs/
 /nozy/outputs
-/nozy/packages
+# /nozy/packages
 /nz_outputs/
 /input/
 /models/
