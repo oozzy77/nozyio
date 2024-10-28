@@ -4,10 +4,10 @@
 
 demo: https://youtu.be/L_6kY-fhIcU
 
-- Workflow nodes editor for your python code
 - **Automatically discover python functions as nodes** with parameters typing
 - Visual file picker GUI for any function inputs requires file
 - Visualize output results of each step/node, including images, charts
+- Save pipeline graph as json and **switch between pipelines quickly**
 - Export the pipeline graph as Python code
 - Python visual scripting
 
