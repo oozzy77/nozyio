@@ -41,7 +41,7 @@ export default function InstallPackageDialog({
         } else {
           toast({
             title: `✅Installed package ${url}`,
-            description: "Please refresh the page to use the new nodes.",
+            description: "Please refresh the page.",
           });
         }
       });
