@@ -9,12 +9,14 @@ import { useEffect, useState } from "react";
 import { Stack } from "./ui/Stack";
 import { Flex } from "./ui/Flex";
 import { Button } from "./ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function InstallPackageDialog({
   onClose,
 }: {
   onClose: () => void;
 }) {
+  const { toast } = useToast();
   const [packages, setPackages] = useState<any[]>([]);
   const [installingUrl, setInstallingUrl] = useState<string | null>(null);
   useEffect(() => {
@@ -32,7 +34,15 @@ export default function InstallPackageDialog({
       .then((json) => {
         setInstallingUrl(null);
         if (json.error) {
-          alert(`❌Failed to install package ${url}: ${json.error}`);
+          toast({
+            title: `❌Failed to install package ${url}`,
+            description: json.error,
+          });
+        } else {
+          toast({
+            title: `✅Installed package ${url}`,
+            description: "Please refresh the page to use the new nodes.",
+          });
         }
       });
   };
