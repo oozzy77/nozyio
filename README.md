@@ -55,13 +55,14 @@ resize_image.NOZY_NODE_DEF = {
 <img width="1726" alt="001-workflow and code" src="https://github.com/user-attachments/assets/fa069e03-ffb5-4c58-bb38-e7dbbb21cea5">
 
 
-**👇Automatically scan your python functions as nodes with params typing**
+**👇Automatic nodes discovery**
 
-<img width="400" alt="Screenshot 2024-10-19 at 2 50 02 PM" src="https://github.com/user-attachments/assets/b6a2bb36-9d0e-4940-99da-7d40918bbaf1">
+<img width="700" alt="003 - automatic scan nodes" src="https://github.com/user-attachments/assets/29030537-44e8-4865-b9f9-163d1f4714b9">
+
 
 **👇Double-click canvas to search any functions in your project and add nodes**
 
-<img width="400" alt="Screenshot 2024-10-19 at 10 42 41 PM" src="https://github.com/user-attachments/assets/f18b4569-ee60-4385-ad95-3fe72a9e5f43">
+<img width="500" alt="Screenshot 2024-10-19 at 10 42 41 PM" src="https://github.com/user-attachments/assets/f18b4569-ee60-4385-ad95-3fe72a9e5f43">
 
 ### Node input types
 
