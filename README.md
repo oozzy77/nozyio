@@ -23,6 +23,8 @@ To start the nozyio UI:
 
 `nozyio`
 
+Pypi: https://pypi.org/project/nozyio/
+
 ## Usage
 
 **Super easy node define (just write a function with typing) For example:**
