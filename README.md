@@ -46,13 +46,14 @@ resize_image.NOZY_NODE_DEF = {
 
 ```
 
-👇This function will be rendered as below. You can see that all args default values are populated as the input box defaults
+👇This function will be rendered as below. Args default values are populated as the input box defaults
 
 <img width="398" alt="Screenshot 2024-10-19 at 9 22 37 PM" src="https://github.com/user-attachments/assets/4be4c5ae-c2ab-429b-8830-89504bffeb2e">
 
 **👇Export workflow to code, preview any image input/output**
 
-<img width="1728" alt="378069723-64a69234-5532-43a4-b192-415317be6fcd-min" src="https://github.com/user-attachments/assets/b93e8de8-35aa-4144-a41d-10ede476a74d">
+<img width="1726" alt="001-workflow and code" src="https://github.com/user-attachments/assets/fa069e03-ffb5-4c58-bb38-e7dbbb21cea5">
+
 
 **👇Automatically scan your python functions as nodes with params typing**
 
