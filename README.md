@@ -4,7 +4,7 @@
 
 It can also be used as a visual scripting tool for python.
 
-demo: https://youtu.be/L_6kY-fhIcU
+demo: [https://youtu.be/L_6kY-fhIcU](https://www.youtube.com/watch?v=-bL3AcAufd8)
 
 - **Automatically discover python functions as nodes** with parameters typing
 - Visually pick input files, tune parameters, and preview any image input/output from the GUI
