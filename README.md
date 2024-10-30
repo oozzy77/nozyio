@@ -4,6 +4,8 @@
 
 It can also be used as a visual scripting tool for python.
 
+if you are interested in colaboration, email nozyio.hello@gmail.com
+
 demo: [https://youtu.be/L_6kY-fhIcU](https://www.youtube.com/watch?v=-bL3AcAufd8)
 
 - **Automatically discover python functions as nodes** with parameters typing
